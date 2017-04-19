@@ -1,296 +1,512 @@
-<!--
-'**************************************************
-' Edu-Stats v.1.9
-' Academic Statistics Parser
-' Google Scholar, Scopus, ResearchGate, ResearcherID
-'
-'
-' Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-'**************************************************
--->
-
 <html>
-<head>
-<title>Edu-Stats - Academic Statistics Parser</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?google=7ftCdTQAAAAJ"></script>
-<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?scopus=54413825200"></script>
-<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?rg=Kaveh_Bakhtiyari"></script>
-<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?reid=E-5776-2011"></script>
-<script language="javascript">function GetEduVar(varName){document.write (window[varName]);}</script>
+	<head>
+		<title>Edu-Stats - Academic Statistics Parser</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<style>
-body, p, table, td, tr {
-	font-size: 1rem;
+				<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?google=7ftCdTQAAAAJ"/>
+				<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?scopus=54413825200"/>
+				<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?rg=Kaveh_Bakhtiyari"/>
+				<script src="http://kaveh.bakhtiyari.com/code/edu-stats.asp?reid=E-5776-2011"/>
+				<script language="javascript">function GetEduVar(varName){document.write (window[varName]);}</script>
+
+				<style>
+body {
+	background-color: #efefef;
 }
-</style>
+body, div, li {
+	font-family: Arial;
+	font-size: 0.8rem;
+}
 
-</head>
-<body>
-<h1>Edu-Stats v.1.9</h1>
-<h2>Academic Statistics Parser</h2>
-<h5>Updated in April 14, 2017</h5>
+ul.menu {
+	list-style: none;
+	padding-left: 0;
+}
+.menu > li {
+	padding: 5px 5px 5px;
+}
+code {
+	font-size:1rem;
+	width:100%;
+	background: #efefef;
+}
+@media (min-width:500px){
+	#wrapper {
+		display: table;
+		width:100%;
+		table-layout: fixed;
+		/* margin-left: 200px; */
+	}
 
-<p>
+	#content {
+		display: table-cell;
+		margin:0px 0px 0px;
+		padding-top: 20px;
+		padding-left: 20px;
+		width:100%;
+		background-color: #ffffff;
+	}
+	#sidebar {
+		display: table-cell;
+		width: 13%;
+		min-width: 200px;
+		/* margin-left: -200px; */
+	}
+}
+#cleared {
+	clear: both;
+}
+
+
+table { border-collapse: collapse; text-align: left; width: 100%; font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; color:#FFFFFF; font-size: 15px; font-weight: bold; border-left: 1px solid #0070A8; }  table thead th:first-child { border: none; } table tbody td { color: #00557F; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; } table tbody .alt td { background: #E1EEf4; color: #00557F; } table tbody td:first-child { border-left: none; } table tbody tr:last-child td { border-bottom: none; } table tfoot td div { border-top: 1px solid #006699;background: #E1EEf4;}  table tfoot td { padding: 0; font-size: 12px }  table tfoot td div{ padding: 2px; } table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; } table tfoot  li { display: inline; } table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #006699;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; } table tfoot ul.active,  table tfoot ul a:hover { text-decoration: none;border-color: #00557F; color: #FFFFFF; background: none; background-color:#006699;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+				</style>
+
+			</head>
+			<body>
+
+
+				<div id="wrapper">
+					<div id="sidebar">
+						<h1>Edu-Stats</h1>
+
+						<ul class="menu">
+							<li>
+								<a href="#About">About</a>
+							</li>
+							<li>
+								<a href="#KnownIssues">Known Issues</a>
+							</li>
+							<li>
+								<a href="#Troubleshooting">Troubleshooting</a>
+							</li>
+							<li>
+								<a href="#VersionHistory">Version History</a>
+							</li>
+							<li>
+								<a href="#SupportedProfiles">Supported Profiles</a>
+							</li>
+							<li>
+								<a href="#Usage">Usage</a>
+							</li>
+							<li>
+								<a href="#Demo">Demo</a>
+							</li>
+							<li>
+								<a href="https://github.com/kavehbc/Edu-Stats">Source Code</a>
+							</li>
+						</ul>
+
+					</div>
+					<div id="content">
+
+						<h2>Edu-Stats: Academic Statistics Parser (v.1.9)</h2>
+						<h5>Updated in April 14, 2017</h5>
+
+						<p id="About">
 Official academic profiles do not provide APIs to show the relevant statistics on the other websites (e.g. the personal websites).<br/>
-<i>Edu-Stats</i> is a parser to extract the scholar details of academicians such as h-Index, citations, etc.<br />
+							<i>Edu-Stats</i> is a parser to extract the scholar details of academicians such as h-Index, citations, etc.<br />
 These extracted data can be used and presented on the personal websites by an embedded JavaScript.<br />
-This code is developed by <a href="http://www.bakhtiyari.com">Kaveh Bakhtiyari</a>.<br /><br />
+This code is developed by <a href="http://www.bakhtiyari.com">Kaveh Bakhtiyari</a>.<br />
+							<br />
 
-<b>NOTE:</b><br />
+							<b>NOTE:</b>
+							<br />
 This code is open-source, and it can be used for non-commercial purposes.<br />
-</p>
+						</p>
 
-<h3>Known Issues</h3>
-	<ul>
-		<li>ResearchGate function is not working at the moment.</li>
-		<li>ResearcherID function sometimes stop working.</li>
-	</ul>
+						<hr />
+						<h3 id="KnownIssues">Known Issues</h3>
+						<ul>
+							<li>ResearchGate function is not working at the moment.</li>
+							<li>ResearcherID function sometimes stops working.</li>
+						</ul>
 
-
-<h3>Troubleshooting</h3>
+						<hr />
+						<h3 id="Troubleshooting">Troubleshooting</h3>
 If there is any error on loading and extracting the data, please contact me on <a href="http://www.bakhtiyari.com">www.bakhtiyari.com</a>.
 
-<br />
+						<br />
 
-<h3>Version History</h3>
+						<hr />
+						<h3 id="VersionHistory">Version History</h3>
 
-<b>v1.9: 14 April 2017</b><br />
+						<b>v1.9: 14 April 2017</b>
+						<br />
 Google Scholar bug fixed.<br />
 Scopus bug fixed.<br />
-<br />
+						<br />
 
-<b>v1.8: 8 April 2015</b><br />
+						<b>v1.8: 8 April 2015</b>
+						<br />
 ResearchGate bug fixed.<br />
-<br />
+						<br />
 
-<b>v1.7: 11 January 2015</b><br />
+						<b>v1.7: 11 January 2015</b>
+						<br />
 ResearcherID parser support added.<br />
-<br />
+						<br />
 
-<b>v1.6: 10 January 2015</b><br />
+						<b>v1.6: 10 January 2015</b>
+						<br />
 SSL (HTTPS) bug fixed on Google Scholar.<br />
-<br />
+						<br />
 
-<b>v1.5: 6 January 2015</b><br />
+						<b>v1.5: 6 January 2015</b>
+						<br />
 Prefix attribute added for multi-extraction.<br />
-<br />
+						<br />
 
-<b>v1.0: 2 January 2015</b><br />
+						<b>v1.0: 2 January 2015</b>
+						<br />
 Initial version developed.<br />
-<br />
+						<br />
 
-<h3>Edu-Stats Supported Profiles</h3>
+						<hr />
+						<h3 id="SupportedProfiles">Edu-Stats Supported Profiles</h3>
 
-<ul>
-<li><a href="http://scholar.google.com" target="_blank">Google Scholar</a></li>
-	<ul>
-		<li>h-Index</li>
-		<li>i10-Index</li>
-		<li>Total Citations</li>
-	</ul>
-<li><a href="http://www.scopus.com" target="_blank">Scopus</a></li>
-	<ul>
-		<li>Total Documents</li>
-		<li>h-Index</li>
-		<li>Co-Authors</li>
-		<li>Total References</li>
-	</ul>
-<li><a href="http://www.researchgate.net" target="_blank">ResearchGate</a></li>
-	<ul>
-		<li>Publications</li>
-		<li>RG Score</li>
-		<li>Views</li>
-		<li>Downloads</li>
-		<li>Citations</li>
-		<li>Impact Points</li>
-	</ul>
-<li><a href="http://www.researcherid.com" target="_blank">ResearcherID</a></li>
-	<ul>
-		<li>Total Article Count</li>
-		<li>Article Count for Metrics</li>
-		<li>Times Cited</li>
-		<li>Average Citation</li>
-		<li>h-Index</li>
-		<li>Last Updated Date/Time</li>
-	</ul>
-</ul>
-<h3>Usage</h3>
+						<ul>
+							<li>
+								<a href="http://scholar.google.com" target="_blank">Google Scholar</a>
+							</li>
+							<ul>
+								<li>h-Index</li>
+								<li>i10-Index</li>
+								<li>Total Citations</li>
+							</ul>
+							<li>
+								<a href="http://www.scopus.com" target="_blank">Scopus</a>
+							</li>
+							<ul>
+								<li>Total Documents</li>
+								<li>h-Index</li>
+								<li>Co-Authors</li>
+								<li>Total References</li>
+							</ul>
+							<li>
+								<a href="http://www.researchgate.net" target="_blank">ResearchGate</a>
+							</li>
+							<ul>
+								<li>Publications</li>
+								<li>RG Score</li>
+								<li>Views</li>
+								<li>Downloads</li>
+								<li>Citations</li>
+								<li>Impact Points</li>
+							</ul>
+							<li>
+								<a href="http://www.researcherid.com" target="_blank">ResearcherID</a>
+							</li>
+							<ul>
+								<li>Total Article Count</li>
+								<li>Article Count for Metrics</li>
+								<li>Times Cited</li>
+								<li>Average Citation</li>
+								<li>h-Index</li>
+								<li>Last Updated Date/Time</li>
+							</ul>
+						</ul>
+
+						<hr />
+						<h3 id="Usage">Usage</h3>
 
 The script generator should be placed in the HEAD section of the HTML code as below:
-<br><br>
-<code>
+						<br />
+						<br />
+						<code>
 &lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>&amp;rg=<b>&lt;RG_PARAMETER&gt;</b>&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>&quot;&gt;&lt;/script&gt;
-</code>
-<br><br>
+						</code>
+						<br />
+						<br />
 
-The above code receives 3 optional query string parameters as below.<br>
-At least one of the parameters should be set.<br><br>
+The above code receives 3 optional query string parameters as below.<br />
+At least one of the parameters should be set.<br />
+						<br />
 
-<table border="1">
-<tr><td>Parameter</td><td>Description</td><td>Sample</td></tr>
-<tr><td>google (optional)</td><td>
-	Google Scholar Profile ID<br>
+						<table border="1">
+							<tr>
+								<th>Parameter</th>
+								<th>Description</th>
+								<th>Sample</th>
+							</tr>
+							<tr>
+								<td>google (optional)</td>
+								<td>
+	Google Scholar Profile ID<br />
 	In your profile URL (http://scholar.google.com/citations?user=<b>7ftCdTQAAAAJ</b>&hl=en),
 	"user" value is the Profile ID.
-</td><td>
+								</td>
+								<td>
 	google=7ftCdTQAAAAJ
-</td></tr>
+								</td>
+							</tr>
 
 
-<tr><td>scopus (optional)</td><td>
-	Scopus Author ID<br>
+							<tr>
+								<td>scopus (optional)</td>
+								<td>
+	Scopus Author ID<br />
 	In your profile URL (http://www.scopus.com/authid/detail.url?authorId=<b>54413825200</b>),
 	"authorId" value is the Profile ID.
-</td><td>
+								</td>
+								<td>
 	scopus=54413825200
-</td></tr>
+								</td>
+							</tr>
 
 
-<tr><td>rg (optional)</td><td>
-	ResearchGate Name<br>
+							<tr>
+								<td>rg (optional)</td>
+								<td>
+	ResearchGate Name<br />
 	In your profile URL (http://www.researchgate.net/profile/<b>Kaveh_Bakhtiyari</b>),
 	the last part of the URL is the RG Name.
-</td><td>
+								</td>
+								<td>
 	rg=Kaveh_Bakhtiyari
-</td></tr>
+								</td>
+							</tr>
 
-<tr><td>reid (optional)</td><td>
-	ResearcherID<br>
+							<tr>
+								<td>reid (optional)</td>
+								<td>
+	ResearcherID<br />
 	In your profile URL (http://www.researcherid.com/rid/<b>E-5776-2011</b>),
 	the last part of the URL is the id.
-</td><td>
+								</td>
+								<td>
 	reid=E-5776-2011
-</td></tr>
+								</td>
+							</tr>
 
-<tr><td>prefix (optional)</td><td>
-	A prefix to be used for variables to differentiate different scholars.<br>
-	<b>LIMIT:</b><br />
+							<tr>
+								<td>prefix (optional)</td>
+								<td>
+	A prefix to be used for variables to differentiate different scholars.<br />
+									<b>LIMIT:</b>
+									<br />
 	10 alphanumeric characters.
-</td><td>
+								</td>
+								<td>
 	prefix=asd123
-</td></tr>
-</table>
+								</td>
+							</tr>
+						</table>
 
-<h3>Variables &amp; Demo</h3>
+						<hr />
+						<h3 id="Demo">Variables &amp; Demo</h3>
 
-Once the script has been included, the following variables are set, and they are accessible via JavaScript.<br><br>
+Once the script has been included, the following variables are set, and they are accessible via JavaScript.<br />
+						<br />
 
-<table border="1">
-<tr><td>Variable</td><td>Value</td></tr>
-<tr><td>Google_ID</td><td>
-	<script>GetEduVar("Google_ID");</script>
-</td></tr>
-<tr><td>Google_URL</td><td>
-	<script>GetEduVar("Google_URL");</script>
-</td></tr>
-<tr><td>Google_Citations</td><td>
-	<script>GetEduVar("Google_Citations");</script>
-</td></tr>
-<tr><td>Google_hIndex</td><td>
-	<script>GetEduVar("Google_hIndex");</script>
-</td></tr>
-<tr><td>Google_i10Index</td><td>
-	<script>GetEduVar("Google_i10Index");</script>
-</td></tr>
+						<table border="1">
+							<tr>
+								<th>Variable</th>
+								<th>Value</th>
+							</tr>
+							<tr>
+								<td>Google_ID</td>
+								<td>
+									<script>GetEduVar("Google_ID");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Google_URL</td>
+								<td>
+									<script>GetEduVar("Google_URL");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Google_Citations</td>
+								<td>
+									<script>GetEduVar("Google_Citations");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Google_hIndex</td>
+								<td>
+									<script>GetEduVar("Google_hIndex");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Google_i10Index</td>
+								<td>
+									<script>GetEduVar("Google_i10Index");</script>
+								</td>
+							</tr>
 
-<tr><td>Scopus_ID</td><td>
-	<script>GetEduVar("Scopus_ID");</script>
-</td></tr>
-<tr><td>Scopus_URL</td><td>
-	<script>GetEduVar("Scopus_URL");</script>
-</td></tr>
-<tr><td>Scopus_Documents</td><td>
-	<script>GetEduVar("Scopus_Documents");</script>
-</td></tr>
-<tr><td>Scopus_hIndex</td><td>
-	<script>GetEduVar("Scopus_hIndex");</script>
-</td></tr>
-<tr><td>Scopus_CoAuthors</td><td>
-	<script>GetEduVar("Scopus_CoAuthors");</script>
-</td></tr>
-<tr><td>Scopus_References</td><td>
-	<script>GetEduVar("Scopus_References");</script>
-</td></tr>
+							<tr>
+								<td>Scopus_ID</td>
+								<td>
+									<script>GetEduVar("Scopus_ID");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Scopus_URL</td>
+								<td>
+									<script>GetEduVar("Scopus_URL");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Scopus_Documents</td>
+								<td>
+									<script>GetEduVar("Scopus_Documents");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Scopus_hIndex</td>
+								<td>
+									<script>GetEduVar("Scopus_hIndex");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Scopus_CoAuthors</td>
+								<td>
+									<script>GetEduVar("Scopus_CoAuthors");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>Scopus_References</td>
+								<td>
+									<script>GetEduVar("Scopus_References");</script>
+								</td>
+							</tr>
 
 
-<tr><td>RG_ID</td><td>
-	<script>GetEduVar("RG_ID");</script>
-</td></tr>
-<tr><td>RG_URL</td><td>
-	<script>GetEduVar("RG_URL");</script>
-</td></tr>
-<tr><td>RG_Score</td><td>
-	<script>GetEduVar("RG_Score");</script>
-</td></tr>
-<tr><td>RG_Publications</td><td>
-	<script>GetEduVar("RG_Publications");</script>
-</td></tr>
-<tr><td>RG_Views</td><td>
-	<script>GetEduVar("RG_Views");</script>
-</td></tr>
-<tr><td>RG_Downloads</td><td>
-	<script>GetEduVar("RG_Downloads");</script>
-</td></tr>
-<tr><td>RG_Citations</td><td>
-	<script>GetEduVar("RG_Citations");</script>
-</td></tr>
-<tr><td>RG_ImpactPoints</td><td>
-	<script>GetEduVar("RG_ImpactPoints");</script>
-</td></tr>
+							<tr>
+								<td>RG_ID</td>
+								<td>
+									<script>GetEduVar("RG_ID");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_URL</td>
+								<td>
+									<script>GetEduVar("RG_URL");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_Score</td>
+								<td>
+									<script>GetEduVar("RG_Score");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_Publications</td>
+								<td>
+									<script>GetEduVar("RG_Publications");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_Views</td>
+								<td>
+									<script>GetEduVar("RG_Views");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_Downloads</td>
+								<td>
+									<script>GetEduVar("RG_Downloads");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_Citations</td>
+								<td>
+									<script>GetEduVar("RG_Citations");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>RG_ImpactPoints</td>
+								<td>
+									<script>GetEduVar("RG_ImpactPoints");</script>
+								</td>
+							</tr>
 
 
-<tr><td>ReID_ID</td><td>
-	<script>GetEduVar("ReID_ID");</script>
-</td></tr>
-<tr><td>ReID_URL</td><td>
-	<script>GetEduVar("ReID_URL");</script>
-</td></tr>
-<tr><td>ResearcherID_totalArticleCount</td><td>
-	<script>GetEduVar("ResearcherID_totalArticleCount");</script>
-</td></tr>
-<tr><td>ResearcherID_articleCountForMetrics</td><td>
-	<script>GetEduVar("ResearcherID_articleCountForMetrics");</script>
-</td></tr>
-<tr><td>ResearcherID_timesCited</td><td>
-	<script>GetEduVar("ResearcherID_timesCited");</script>
-</td></tr>
-<tr><td>ResearcherID_averagePerItem</td><td>
-	<script>GetEduVar("ResearcherID_averagePerItem");</script>
-</td></tr>
-<tr><td>ResearcherID_hindex</td><td>
-	<script>GetEduVar("ResearcherID_hindex");</script>
-</td></tr>
-<tr><td>ResearcherID_lastUpdatedString</td><td>
-	<script>GetEduVar("ResearcherID_lastUpdatedString");</script>
-</td></tr>
+							<tr>
+								<td>ReID_ID</td>
+								<td>
+									<script>GetEduVar("ReID_ID");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ReID_URL</td>
+								<td>
+									<script>GetEduVar("ReID_URL");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_totalArticleCount</td>
+								<td>
+									<script>GetEduVar("ResearcherID_totalArticleCount");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_articleCountForMetrics</td>
+								<td>
+									<script>GetEduVar("ResearcherID_articleCountForMetrics");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_timesCited</td>
+								<td>
+									<script>GetEduVar("ResearcherID_timesCited");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_averagePerItem</td>
+								<td>
+									<script>GetEduVar("ResearcherID_averagePerItem");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_hindex</td>
+								<td>
+									<script>GetEduVar("ResearcherID_hindex");</script>
+								</td>
+							</tr>
+							<tr>
+								<td>ResearcherID_lastUpdatedString</td>
+								<td>
+									<script>GetEduVar("ResearcherID_lastUpdatedString");</script>
+								</td>
+							</tr>
 
-</table>
-<br><br>
+						</table>
+						<br />
+						<br />
 
-For instance, to show the Google Scholar h-Index on a website, it is only required to write the variable on a page.<br><br>
-<code>
+For instance, to show the Google Scholar h-Index on a website, it is only required to write the variable on a page.<br />
+						<br />
+						<code>
 &lt;script language=&quot;javascript&quot;&gt;
 document.write (Google_hIndex);
 &lt;/script&gt;
-</code>
-<br><br>
+						</code>
+						<br />
+						<br />
 
-In case if the "prefix" parameter has been set, the variables would be changed as below:<br>
+In case if the "prefix" parameter has been set, the variables would be changed as below:<br />
 For instance, if the prefix has been set to "123abc", then:
-<br><br>
-<code>
+						<br />
+						<br />
+						<code>
 &lt;script language=&quot;javascript&quot;&gt;
 document.write (<b>123abc_</b>Google_hIndex);
 &lt;/script&gt;
-</code>
+						</code>
 
-<br><br>
-<hr />
+						<br />
+						<br />
+						<hr />
 Copyright &copy; Kaveh Bakhtiyari. All rights reserved.
-<br><br>
+						<br />
+						<br />
 
-</body>
-</html>
+					</div>
+					<div id="cleared"/>
+				</div>
+
+			</body>
+		</html>
