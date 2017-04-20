@@ -7,30 +7,14 @@
 '
 '
 ' Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-' v1.9: 14 April 2017
-' Google Scholar bug fixed.
-' Scopus bug fixed.
-'
-' v1.8: 8 April 2015
-' ResearchGate bug fixed.
-'
-' v1.7: 11 January 2015
-' ResearcherID parser support added.
-'
-' v1.6: 10 January 2015
-' SSL (HTTPS) bug fixed on Google Scholar.
-'
-' v1.5: 6 January 2015
-' Prefix attribute added for multi-extraction.
-'
-' v1.0: 2 January 2015
+' v1.9: 20 April 2017
 '**************************************************
 
 Server.ScriptTimeOut = 2147483647
 Server.ScriptTimeOut = 7000
 'On Error Resume Next
 
-UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2"
+UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 
 'Google Scholar Variables
 GCitations = -1
@@ -43,14 +27,6 @@ ShIndex = -1
 SCoAuthors = -1
 SReferences = -1
 
-'ResearchGate Variables
-RGPublications = -1
-RGViews = -1 
-RGDownloads = -1
-RGCitations = -1
-RGImpactPoints = -1
-RGScore = -1
-
 'ResearcherID Variables
 ResearcherID_totalArticleCount = -1
 ResearcherID_articleCountForMetrics = -1
@@ -59,19 +35,11 @@ ResearcherID_averagePerItem = -1
 ResearcherID_hindex = -1
 ResearcherID_lastUpdatedString = -1
 
-'Sample Variable = "?google=7ftCdTQAAAAJ&scopus=54413825200&rg=Kaveh_Bakhtiyari&reid=E-5776-2011"
-
 GScholar = Request("google")
 SScopusID = Request("scopus")
-RGName = Request("rg")
 ReID = Request("reid")
 prefix = Request("prefix")
 
-If Len(prefix) <= 10 Then
-	prefix = prefix & "_"
-Else
-	prefix = ""
-End If
 
 If Len(GScholar) > 0 Then
 	GURL = "http://scholar.google.com/citations?user=" & GScholar & "&hl=en"
@@ -81,11 +49,6 @@ End If
 If Len(SScopusID) > 0 Then
 	SURL = "https://www.scopus.com/authid/detail.uri?authorId=" & SScopusID
 	Scopus(SURL)
-End If
-
-If Len(RGName) > 0 Then
-	RGURL = "https://www.researchgate.net/profile/" & RGName
-	ResearchGate(RGURL)
 End If
 
 If Len(ReID) > 0 Then
@@ -99,9 +62,6 @@ If Len(Request("print")) > 0 Then
 Else
 	ScriptAll
 End If
-
-
-
 
 
 
@@ -288,91 +248,6 @@ End Function
 
 
 
-Function ResearchGate(URL)
-
-Params = ""
-
-'Set Xobj = Server.CreateObject("Msxml2.XMLHTTP")
-Set Xobj = Server.CreateObject("Msxml2.ServerXMLHTTP.3.0")
-Xobj.Open "GET",URL,false
-Xobj.SetRequestHeader "User-Agent", UserAgent
-'Xobj.SetRequestHeader "Referer", URL
-'Xobj.SetRequestHeader "Content-type", "application/x-www-form-urlencoded"
-'Xobj.SetRequestHeader "Content-type", "text/html"
-'Xobj.SetRequestHeader "Content-length", Len(Params)
-'Xobj.SetRequestHeader "Connection", "close"
-
-Xobj.Send
-
-If Int(xobj.Status) = 200 Then
-	Code = xobj.ResponseText
-	strCookies = Xobj.getResponseHeader("Set-Cookie")
-	'strCookies = Xobj.getAllResponseHeaders()
-	pageSize = Len(Code)
-Else
-	Code = "Server can not accesible at the moment!"
-	pageSize = 0
-End If
-		 
-Set Xobj = Nothing
-
-
-startPoint = 1
-
-SearchFROM = "<span class=""ico-rgscore-13x16""></span>"
-strTO = "</div>"
-dblFROM = InStr(startPoint,Code,SearchFROM)
-dblFROM = dblFROM + Len(SearchFROM)
-dblTO = InStr(dblFROM,Code,strTO)
-startPoint = dblTO
-dblTO = dblTO - dblFROM
-
-strResult = Trim(Mid(Code,dblFROM,dblTO))
-	If Len(strResult) > 0 Then
-		strConverted = Replace(strResult,",","")
-		RGScore = CDbl(strConverted)
-	End If
-
-SearchFROM = "<div class=""stats-count"">"
-strTO = "</div>"
-
-	FOR i = 1 to 5
-dblFROM = InStr(startPoint,Code,SearchFROM)
-dblFROM = dblFROM + Len(SearchFROM)
-dblTO = InStr(dblFROM,Code,strTO)
-startPoint = dblTO
-dblTO = dblTO - dblFROM
-
-strResult = Trim(Mid(Code,dblFROM,dblTO))
-	If Len(strResult) > 0 Then
-		strConverted = strResult
-		'strConverted = Replace(strConverted,",","")
-		strConverted = Replace(strConverted,chr(13),"")
-		strConverted = Replace(strConverted,chr(10),"")
-		strConverted = Trim(strConverted)
-		'strConverted = Asc(Left(strConverted,1))
-		If i = 1 Then
-			RGPublications = strConverted
-		Elseif i = 2 Then
-			RGViews = strConverted
-		Elseif i = 3 Then
-			RGDownloads = strConverted
-		Elseif i = 4 Then
-			RGCitations = strConverted
-		Elseif i = 5 Then
-			RGImpactPoints = strConverted
-		End If
-	End If
-
-	Next
-
- 
-End Function
-
-
-
-
-
 
 
 
@@ -514,13 +389,9 @@ ResearcherID_lastUpdatedString = Trim(Mid(Code,dblFROM,dblTO))
 End Function
 
 
-
-
-
-
 Function PrefixCheck()
-    If Len(prefix) > 1 Then
-        PrefixCheck = prefix
+    If Len(prefix) > 1 AND Len(prefix) <= 10 Then
+        PrefixCheck = prefix & "_"
     Else 
         PrefixCheck = ""
     End If
@@ -530,67 +401,31 @@ End Function
 Function ScriptAll()
 	If Len(GScholar) > 0 Then
 	Response.Write PrefixCheck() & "Google_ID = """ & GScholar & """;"
-	Response.Write "Google_URL = """ & GURL & """;"
-	Response.Write "Google_Citations = " & GCitations & ";"
-	Response.Write "Google_hIndex = " & GhIndex & ";"
-	Response.Write "Google_i10Index = " & Gi10Index & ";"
+	Response.Write PrefixCheck() & "Google_URL = """ & GURL & """;"
+	Response.Write PrefixCheck() & "Google_Citations = " & GCitations & ";"
+	Response.Write PrefixCheck() & "Google_hIndex = " & GhIndex & ";"
+	Response.Write PrefixCheck() & "Google_i10Index = " & Gi10Index & ";"
 	End If
 	
 	If Len(SScopusID) > 0 Then
-	Response.Write "Scopus_ID = """ & SScopusID & """;"
-	Response.Write "Scopus_URL = """ & SURL & """;"
-	Response.Write "Scopus_Documents = " & SDocuments & ";"
-	Response.Write "Scopus_hIndex = " & ShIndex & ";"
-	Response.Write "Scopus_CoAuthors = " & SCoAuthors & ";"
-	Response.Write "Scopus_References = " & SReferences & ";"
+	Response.Write PrefixCheck() & "Scopus_ID = """ & SScopusID & """;"
+	Response.Write PrefixCheck() & "Scopus_URL = """ & SURL & """;"
+	Response.Write PrefixCheck() & "Scopus_Documents = " & SDocuments & ";"
+	Response.Write PrefixCheck() & "Scopus_hIndex = " & ShIndex & ";"
+	Response.Write PrefixCheck() & "Scopus_CoAuthors = " & SCoAuthors & ";"
+	Response.Write PrefixCheck() & "Scopus_References = " & SReferences & ";"
 	End If
-	
-	If Len(RGName) > 0 Then
-	Response.Write "RG_ID = """ & RGName & """;"
-	Response.Write "RG_URL = """ & RGURL & """;"
-	Response.Write "RG_Score = """ & RGScore & """;"
-	Response.Write "RG_Publications = """ & RGPublications & """;"
-	Response.Write "RG_Views = """ & RGViews & """;"
-	Response.Write "RG_Downloads = """ & RGDownloads & """;"
-	Response.Write "RG_Citations = """ & RGCitations & """;"
-	Response.Write "RG_ImpactPoints = """ & RGImpactPoints & """;"
-	End If
-	
+		
 	If Len(ReID) > 0 Then
-	Response.Write "ReID_ID = """ & ReID & """;"
-	Response.Write "ReID_URL = """ & ReIDURL & """;"
-	Response.Write "ResearcherID_totalArticleCount = """ & ResearcherID_totalArticleCount & """;"
-	Response.Write "ResearcherID_articleCountForMetrics = """ & ResearcherID_articleCountForMetrics & """;"
-	Response.Write "ResearcherID_timesCited = """ & ResearcherID_timesCited & """;"
-	Response.Write "ResearcherID_averagePerItem = """ & ResearcherID_averagePerItem & """;"
-	Response.Write "ResearcherID_hindex = """ & ResearcherID_hindex & """;"
-	Response.Write "ResearcherID_lastUpdatedString = """ & ResearcherID_lastUpdatedString & """;"
+	Response.Write PrefixCheck() & "ReID_ID = """ & ReID & """;"
+	Response.Write PrefixCheck() & "ReID_URL = """ & ReIDURL & """;"
+	Response.Write PrefixCheck() & "ResearcherID_totalArticleCount = """ & ResearcherID_totalArticleCount & """;"
+	Response.Write PrefixCheck() & "ResearcherID_articleCountForMetrics = """ & ResearcherID_articleCountForMetrics & """;"
+	Response.Write PrefixCheck() & "ResearcherID_timesCited = """ & ResearcherID_timesCited & """;"
+	Response.Write PrefixCheck() & "ResearcherID_averagePerItem = """ & ResearcherID_averagePerItem & """;"
+	Response.Write PrefixCheck() & "ResearcherID_hindex = """ & ResearcherID_hindex & """;"
+	Response.Write PrefixCheck() & "ResearcherID_lastUpdatedString = """ & ResearcherID_lastUpdatedString & """;"
 	End If
 	
-End Function
-
-Function PrintAll()
-	Response.Write "Google Citations: " & GCitations & "<br />"
-	Response.Write "Google h-Index: " & GhIndex & "<br />"
-	Response.Write "Google i10-Index: " & Gi10Index & "<br />"
-
-	Response.Write "Scopus Documents: " & SDocuments & "<br />"
-	Response.Write "Scopus h-Index: " & ShIndex & "<br />"
-	Response.Write "Scopus Co-Authors: " & SCoAuthors & "<br />"
-	Response.Write "Scopus References: " & SReferences & "<br />"
-
-	Response.Write "RG Score: " & RGScore & "<br />"
-	Response.Write "RG Publications: " & RGPublications & "<br />"
-	Response.Write "RG Views: " & RGViews & "<br />"
-	Response.Write "RG Downloads: " & RGDownloads & "<br />"
-	Response.Write "RG Citations: " & RGCitations & "<br />"
-	Response.Write "RG Impact Points: " & RGImpactPoints & "<br />"
-	
-	Response.Write "ResearcherID_totalArticleCount: " & ResearcherID_totalArticleCount & "<br />"
-	Response.Write "ResearcherID_articleCountForMetrics: " & ResearcherID_articleCountForMetrics & "<br />"
-	Response.Write "ResearcherID_timesCited: " & ResearcherID_timesCited & "<br />"
-	Response.Write "ResearcherID_averagePerItem: " & ResearcherID_averagePerItem & "<br />"
-	Response.Write "ResearcherID_hindex: " & ResearcherID_hindex & "<br />"
-	Response.Write "ResearcherID_lastUpdatedString: " & ResearcherID_lastUpdatedString & "<br />"
 End Function
 %>
