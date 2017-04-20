@@ -73,7 +73,6 @@
 	
 	$GScholar = "";
 	$SScopusID = "";
-	$RGName = "";
 	$ReID = "";
 	$prefix = "";
 	
@@ -321,7 +320,6 @@
 		
 		global $GScholar;
 		global $SScopusID;
-		global $RGName;
 		global $ReID;
 		global $prefix;
 		
