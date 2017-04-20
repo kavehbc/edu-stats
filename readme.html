@@ -119,7 +119,6 @@ This code is open-source, and it can be used for non-commercial purposes.<br />
 						<hr />
 						<h3 id="KnownIssues">Known Issues</h3>
 						<ul>
-							<li>ResearchGate function is not working at the moment.</li>
 							<li>ResearcherID function sometimes stops working.</li>
 						</ul>
 
@@ -132,8 +131,9 @@ If there is any error on loading and extracting the data, please contact me on <
 						<hr />
 						<h3 id="VersionHistory">Version History</h3>
 
-						<b>v1.9: 14 April 2017</b>
+						<b>v1.9: 20 April 2017</b>
 						<br />
+ResearchGate function is removed.<br />
 Google Scholar bug fixed.<br />
 Scopus bug fixed.<br />
 						<br />
@@ -185,17 +185,6 @@ Initial version developed.<br />
 								<li>Total References</li>
 							</ul>
 							<li>
-								<a href="http://www.researchgate.net" target="_blank">ResearchGate</a>
-							</li>
-							<ul>
-								<li>Publications</li>
-								<li>RG Score</li>
-								<li>Views</li>
-								<li>Downloads</li>
-								<li>Citations</li>
-								<li>Impact Points</li>
-							</ul>
-							<li>
 								<a href="http://www.researcherid.com" target="_blank">ResearcherID</a>
 							</li>
 							<ul>
@@ -215,7 +204,7 @@ The script generator should be placed in the HEAD section of the HTML code as be
 						<br />
 						<br />
 						<code>
-&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>&amp;rg=<b>&lt;RG_PARAMETER&gt;</b>&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>&quot;&gt;&lt;/script&gt;
 						</code>
 						<br />
 						<br />
@@ -255,18 +244,6 @@ At least one of the parameters should be set.<br />
 								</td>
 							</tr>
 
-
-							<tr>
-								<td>rg (optional)</td>
-								<td>
-	ResearchGate Name<br />
-	In your profile URL (http://www.researchgate.net/profile/<b>Kaveh_Bakhtiyari</b>),
-	the last part of the URL is the RG Name.
-								</td>
-								<td>
-	rg=Kaveh_Bakhtiyari
-								</td>
-							</tr>
 
 							<tr>
 								<td>reid (optional)</td>
@@ -370,56 +347,6 @@ Once the script has been included, the following variables are set, and they are
 								<td>Scopus_References</td>
 								<td>
 									<script>GetEduVar("Scopus_References");</script>
-								</td>
-							</tr>
-
-
-							<tr>
-								<td>RG_ID</td>
-								<td>
-									<script>GetEduVar("RG_ID");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_URL</td>
-								<td>
-									<script>GetEduVar("RG_URL");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_Score</td>
-								<td>
-									<script>GetEduVar("RG_Score");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_Publications</td>
-								<td>
-									<script>GetEduVar("RG_Publications");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_Views</td>
-								<td>
-									<script>GetEduVar("RG_Views");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_Downloads</td>
-								<td>
-									<script>GetEduVar("RG_Downloads");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_Citations</td>
-								<td>
-									<script>GetEduVar("RG_Citations");</script>
-								</td>
-							</tr>
-							<tr>
-								<td>RG_ImpactPoints</td>
-								<td>
-									<script>GetEduVar("RG_ImpactPoints");</script>
 								</td>
 							</tr>
 
