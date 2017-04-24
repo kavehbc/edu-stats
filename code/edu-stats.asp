@@ -1,19 +1,20 @@
 <%@Language="VBScript" %>
 <%
 '**************************************************
-' Edu-Stats v.1.9
+' Edu-Stats v.1.9.1
 ' Academic Statistics Parser
 ' Google Scholar, Scopus, ResearchGate, ResearcherID
 '
 '
 ' Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-' v1.9: 20 April 2017
+' v1.9.1: 24 April 2017
 '**************************************************
-
+'Option Explicit
 Server.ScriptTimeOut = 2147483647
 Server.ScriptTimeOut = 7000
 'On Error Resume Next
 
+EduStatsVersion = "1.9.1"
 UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 
 'Google Scholar Variables
@@ -39,6 +40,7 @@ GScholar = Request("google")
 SScopusID = Request("scopus")
 ReID = Request("reid")
 prefix = Request("prefix")
+output = Request("output")
 
 
 If Len(GScholar) > 0 Then
@@ -56,12 +58,12 @@ If Len(ReID) > 0 Then
 	ResearcherID(ReIDURL)
 End If
 
-
-If Len(Request("print")) > 0 Then
-	PrintAll
-Else
+Select Case output
+Case "json"
+	JSONAll
+Case Else
 	ScriptAll
-End If
+End Select
 
 
 
@@ -399,6 +401,9 @@ End Function
 
 
 Function ScriptAll()
+
+	Response.Write "EduStats = """ & EduStatsVersion & """;"
+	
 	If Len(GScholar) > 0 Then
 	Response.Write PrefixCheck() & "Google_ID = """ & GScholar & """;"
 	Response.Write PrefixCheck() & "Google_URL = """ & GURL & """;"
@@ -427,5 +432,47 @@ Function ScriptAll()
 	Response.Write PrefixCheck() & "ResearcherID_lastUpdatedString = """ & ResearcherID_lastUpdatedString & """;"
 	End If
 	
+End Function
+
+Function JSONAll()
+	strJSON = ""
+	strJSON = strJSON & "{""EduStats"":""" & EduStatsVersion & """" & vbCrLf
+	
+	If Len(GScholar) > 0 Then
+		strJSON = strJSON & ","
+		strJSON = strJSON & """Google"":" & vbCrLf
+		strJSON = strJSON & vbTab & "{""ID"":""" & GScholar & """," & vbCrLf
+		strJSON = strJSON & vbTab & """URL"":""" & GURL & """," & vbCrLf
+		strJSON = strJSON & vbTab & """Citations"":" & GCitations & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hIndex"":" & GhIndex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """i10Index"":" & Gi10Index & "}" & vbCrLf
+	End If
+	
+	If Len(SScopusID) > 0 Then
+		strJSON = strJSON & ","
+		strJSON = strJSON & """Scopus"":" & vbCrLf
+		strJSON = strJSON & vbTab & "{""ID"":""" & SScopusID & """," & vbCrLf
+		strJSON = strJSON & vbTab & """URL"":""" & SURL & """," & vbCrLf
+		strJSON = strJSON & vbTab & """Documents"":" & SDocuments & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hIndex"":" & ShIndex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """CoAuthors"":" & SCoAuthors & "," & vbCrLf
+		strJSON = strJSON & vbTab & """References"":" & SReferences & "}" & vbCrLf
+	End If
+		
+	If Len(ReID) > 0 Then
+		strJSON = strJSON & ","
+		strJSON = strJSON & """ResearcherID"":" & vbCrLf
+		strJSON = strJSON & vbTab & "{""ID"":""" & ReID & """," & vbCrLf
+		strJSON = strJSON & vbTab & """URL"":""" & ReIDURL & """," & vbCrLf
+		strJSON = strJSON & vbTab & """totalArticleCount"":" & ResearcherID_totalArticleCount & "," & vbCrLf
+		strJSON = strJSON & vbTab & """articleCountForMetrics"":" & ResearcherID_articleCountForMetrics & "," & vbCrLf
+		strJSON = strJSON & vbTab & """timesCited"":" & ResearcherID_timesCited & "," & vbCrLf
+		strJSON = strJSON & vbTab & """averagePerItem"":" & ResearcherID_averagePerItem & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hindex"":" & ResearcherID_hindex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """lastUpdatedString"":""" & ResearcherID_lastUpdatedString & """}" & vbCrLf
+	End If
+	
+	strJSON = strJSON & "}"
+	Response.Write strJSON 
 End Function
 %>
