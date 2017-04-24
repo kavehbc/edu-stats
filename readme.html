@@ -1,4 +1,3 @@
-
 <html>
 	<head>
 		<title>Edu-Stats - Academic Statistics Parser</title>
@@ -8,7 +7,23 @@
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ"></script>
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?scopus=54413825200"></script>
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?reid=E-5776-2011"></script>
-		<script>function GetEduVar(varName){document.write (window[varName]);}</script>
+		<script>
+		function GetEduVar(varName){document.write (window[varName]);}
+		
+		function loadDoc() {
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("jsonoutput").innerHTML = this.responseText;
+				}else{
+					document.getElementById("jsonoutput").innerHTML = 'an error occured while loading the document.';
+				}
+			};
+			xhttp.open("GET", "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ&scopus=54413825200&reid=E-5776-2011&output=json", true);
+			xhttp.send();
+		}
+		document.onload = loadDoc();
+</script>
 
 		<style>
 body {
@@ -26,9 +41,9 @@ ul.menu {
 .menu > li {
 	padding: 5px 5px 5px;
 }
-code {
+.codeDIV {
 	font-size:1rem;
-	width:100%;
+	width:90%;
 	background: #efefef;
 }
 @media (min-width:500px){
@@ -59,7 +74,7 @@ code {
 }
 
 
-table { border-collapse: collapse; text-align: left; width: 100%; font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+table { border-collapse: collapse; text-align: left; width: 95%; font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; color:#FFFFFF; font-size: 15px; font-weight: bold; border-left: 1px solid #0070A8; }  table thead th:first-child { border: none; } table tbody td { color: #00557F; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; } table tbody .alt td { background: #E1EEf4; color: #00557F; } table tbody td:first-child { border-left: none; } table tbody tr:last-child td { border-bottom: none; } table tfoot td div { border-top: 1px solid #006699;background: #E1EEf4;}  table tfoot td { padding: 0; font-size: 12px }  table tfoot td div{ padding: 2px; } table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; } table tfoot  li { display: inline; } table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #006699;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; } table tfoot ul.active,  table tfoot ul a:hover { text-decoration: none;border-color: #00557F; color: #FFFFFF; background: none; background-color:#006699;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
 		</style>
 
@@ -77,9 +92,6 @@ table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gr
 					</li>
 					<li>
 						<a href="#KnownIssues">Known Issues</a>
-					</li>
-					<li>
-						<a href="#Troubleshooting">Troubleshooting</a>
 					</li>
 					<li>
 						<a href="#VersionHistory">Version History</a>
@@ -101,7 +113,7 @@ table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gr
 			</div>
 			<div id="content">
 
-				<h2>Edu-Stats: Academic Statistics Parser (v.1.9)</h2>
+				<h2>Edu-Stats: Academic Statistics Parser (v.1.9.1)</h2>
 
 				<p id="About">
 Official academic profiles do not provide APIs to show the relevant statistics on the other websites (e.g. the personal websites).<br/>
@@ -122,13 +134,12 @@ This code is open-source, and it can be used for non-commercial purposes.<br />
 				</ul>
 
 				<hr />
-				<h3 id="Troubleshooting">Troubleshooting</h3>
-If there is any error on loading and extracting the data, please contact me on <a href="http://www.bakhtiyari.com">www.bakhtiyari.com</a>.
-
-				<br />
-
-				<hr />
 				<h3 id="VersionHistory">Version History</h3>
+
+				<b>v1.9.1: 24 April 2017</b>
+				<br />
+JSON output is added.<br />
+				<br />
 
 				<b>v1.9: 20 April 2017</b>
 				<br />
@@ -203,9 +214,14 @@ Initial version<br />
 The script generator should be placed in the HEAD section of the HTML code as below:
 				<br />
 				<br />
-				<code>
-&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>&quot;&gt;&lt;/script&gt;
-				</code>
+				<div class="codeDIV"><code>
+&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>
+&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>
+&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>
+&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>
+&amp;output=<b>&lt;javascript|json&gt;</b>
+&quot;&gt;&lt;/script&gt;
+				</code></div>
 				<br />
 				<br />
 
@@ -267,6 +283,20 @@ At least one of the parameters should be set.<br />
 						</td>
 						<td>
 	prefix=asd123
+						</td>
+					</tr>
+					
+					<tr>
+						<td>output (optional)</td>
+						<td>
+	<b><i>javascript</i></b> (Default)<br />
+	This parameter will generate the output in javascript variables.<br />
+	<b><i>json</i></b><br />
+	This parameter generates JSON output for easier parsing, which is recommended for AJAX functions.<br />
+	JSON does not support prefix parameter.
+						</td>
+						<td>
+	output=json
 						</td>
 					</tr>
 				</table>
@@ -406,11 +436,11 @@ Once the script has been included, the following variables are set, and they are
 
 For instance, to show the Google Scholar h-Index on a website, it is only required to write the variable on a page.<br />
 				<br />
-				<code>
+				<div class="codeDIV"><pre><code>
 &lt;script language=&quot;javascript&quot;&gt;
 document.write (Google_hIndex);
 &lt;/script&gt;
-				</code>
+				</code></pre></div>
 				<br />
 				<br />
 <b>Prefix:</b><br />
@@ -418,22 +448,30 @@ In case if the "prefix" parameter has been set, the variables would be changed a
 For instance, if the prefix has been set to "123abc", then:
 				<br />
 				<br />
-				<code>
+				<div class="codeDIV"><pre><code>
 &lt;script language=&quot;javascript&quot;&gt;
 document.write (<b>123abc_</b>Google_hIndex);
 &lt;/script&gt;
-				</code>
+				</code></pre></div>
 
 				<br />
+				<br />				
+<b>JSON output:</b><br />
+<i>"output"</i> parameter generates JSON output which is suitable for parsing and AJAX functions. A sample JSON output is shown below:
+				<br />
+				<br />
+				<div class="codeDIV"><pre><code id="jsonoutput">
+please wait, it's loading....
+				</code></pre></div>
 				<hr />
 				<h3 id="SourceCode">Source Code</h3>
 You can find the source code in Github repository at <a href="https://github.com/kavehbc/Edu-Stats" target="_blank">https://github.com/kavehbc/Edu-Stats</a>.<br />
 <br />
-<b>PHP Edition:</b><br />
+<b>PHP edition:</b><br />
 In order to use the PHP edition, make sure to enable <i>"php_curl.dll"</i> and <i>"php_openssl.dll"</i> extensions in <i>php.ini</i>.
 				<br /><br />
 				<hr />
-Copyright &copy; Kaveh Bakhtiyari. All rights reserved.
+Copyright &copy; 2017. <a href="http://www.bakhtiyari.com">Kaveh Bakhtiyari</a>. All rights reserved.
 				<br />
 				<br />
 
