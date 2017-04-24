@@ -2,7 +2,7 @@
 	//**************************************************
 	// Edu-Stats v.1.9.1
 	// Academic Statistics Parser
-	// Google Scholar, Scopus, ResearchGate, ResearcherID
+	// Google Scholar, Scopus, ResearcherID
 	//
 	//
 	// Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
