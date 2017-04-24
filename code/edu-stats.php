@@ -1,17 +1,19 @@
 <?php
 	//**************************************************
-	// Edu-Stats v.1.9
+	// Edu-Stats v.1.9.1
 	// Academic Statistics Parser
 	// Google Scholar, Scopus, ResearchGate, ResearcherID
 	//
 	//
 	// Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-	// v1.9: 20 April 2017
+	// v1.9.1: 24 April 2017
 	//**************************************************
 	
 	ini_set("user_agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
 	ini_set('allow_url_fopen',1);
-	
+
+	$EduStatsVersion = "1.9.1";
+
 	function get_web_page( $url, $cookiesIn = '', $param = '' ){
         $options = array(
 		CURLOPT_POST           => true,
@@ -51,7 +53,7 @@
         $header['cookies'] = $cookiesOut;
 		return $header;
 	}
-	
+		
 	//Google Scholar Variables
 	$GCitations = -1;
 	$GhIndex = -1;
@@ -75,6 +77,7 @@
 	$SScopusID = "";
 	$ReID = "";
 	$prefix = "";
+	$output = "javascript";
 	
 	$GURL = "";
 	$SURL = "";
@@ -99,9 +102,21 @@
 	if(isset($_GET['prefix']) && !empty($_GET['prefix'])){
 		$prefix = $_GET['prefix'];
 	}
+	if(isset($_GET['output']) && !empty($_GET['output'])){
+		$output = $_GET['output'];
+	}
 	
+	switch ($output){
+		case "json":
+			JSONAll();
+			break;
+		case "javascript":
+			ScriptAll();
+			break;
+		default:
+			ScriptAll();
+	}
 	
-	ScriptAll();
 	
 	function google($googleurl){
 		
@@ -343,6 +358,9 @@
 		global $ResearcherID_lastUpdatedString;
 		
 		global $prefix;
+		global $EduStatsVersion;
+		
+		echo("EduStats = \"" . $EduStatsVersion . "\";");
 		
 		if (strlen($GScholar) > 0){
 			echo(PrefixCheck() . "Google_ID = \"" . $GScholar . "\";");
@@ -374,4 +392,69 @@
 		
 	}
 	
+	function JSONAll(){
+		global $GScholar;
+		global $SScopusID;
+		global $ReID;
+		global $prefix;
+		
+		global $GURL;
+		global $GCitations;
+		global $GhIndex;
+		global $Gi10Index;
+		
+		global $SURL;
+		global $SDocuments;
+		global $ShIndex;
+		global $SCoAuthors;
+		global $SReferences;
+		
+		global $ReIDURL;
+		global $ResearcherID_totalArticleCount;
+		global $ResearcherID_articleCountForMetrics;
+		global $ResearcherID_timesCited;
+		global $ResearcherID_averagePerItem;
+		global $ResearcherID_hindex;
+		global $ResearcherID_lastUpdatedString;
+		
+		global $EduStatsVersion;
+		
+		$strJSON = "";
+		$strJSON .= "{\"EduStats\":\"" . $EduStatsVersion . "\"\r\n";
+		
+		if (strlen($GScholar) > 0){
+			$strJSON .= ",\"Google\":\r\n";
+			$strJSON .= "\t{\"ID\":\"" . $GScholar . "\",\r\n";
+			$strJSON .= "\t\"URL\":\"" . $GURL . "\",\r\n";
+			$strJSON .= "\t\"Citations\":" . $GCitations . ",\r\n";
+			$strJSON .= "\t\"hIndex\":" . $GhIndex . ",\r\n";
+			$strJSON .= "\t\"i10Index\":" . $Gi10Index . "}\r\n";
+		}
+		
+		if (strlen($SScopusID) > 0){
+			$strJSON .= ",";
+			$strJSON .= "\"Scopus\":\r\n";
+			$strJSON .= "\t\"ID\":\"" . $SScopusID . "\",\r\n";
+			$strJSON .= "\t\"URL\":\"" . $SURL . "\",\r\n";
+			$strJSON .= "\t\"Documents\":" . $SDocuments . ",\r\n";
+			$strJSON .= "\t\"hIndex\":" . $ShIndex . ",\r\n";
+			$strJSON .= "\t\"CoAuthors\":" . $SCoAuthors . ",\r\n";
+			$strJSON .= "\t\"References\":" . $SReferences . "}\r\n";
+		}
+		
+		if (strlen($ReID) > 0){
+			$strJSON .= ",";
+			$strJSON .= "\"ResearcherID\":\r\n";
+			$strJSON .= "\t\"ID\":\"" . $ReID . "\";\r\n";
+			$strJSON .= "\t\"URL\":\"" . $ReIDURL . "\";\r\n";
+			$strJSON .= "\t\"totalArticleCount\":" . $ResearcherID_totalArticleCount . ",\r\n";
+			$strJSON .= "\t\"articleCountForMetrics\":" . $ResearcherID_articleCountForMetrics . ",\r\n";
+			$strJSON .= "\t\"timesCited\":" . $ResearcherID_timesCited . ",\r\n";
+			$strJSON .= "\t\"averagePerItem\":" . $ResearcherID_averagePerItem . ",\r\n";
+			$strJSON .= "\t\"hindex\":" . $ResearcherID_hindex . ",\r\n";
+			$strJSON .= "\t\"lastUpdatedString\":\"" . $ResearcherID_lastUpdatedString . "\"}\r\n";
+		}
+		$strJSON .= "}";		
+		echo ($strJSON);
+	}
 ?>
