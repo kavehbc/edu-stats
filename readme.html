@@ -47,8 +47,9 @@
 					document.getElementById("btnRefresh").disabled = false;
 
 				}else if (this.status != 0 && this.status != 200){
-					document.getElementById("jsonoutput").innerHTML = 'an error occured while loading the document.';
-					reWriteTable(true,"error occurred");
+					document.getElementById("jsonoutput").innerHTML = 'error ' + this.status + ' occured!';
+					reWriteTable(true,"error " + this.status + " occurred!");
+					document.getElementById("btnRefresh").disabled = false;
 				}
 			};
 			document.getElementById("btnRefresh").disabled = true;
@@ -363,7 +364,7 @@ At least one of the parameters should be set.<br />
 				<hr />
 				<h3 id="Demo">Variables &amp; Demo</h3>
 
-Once the script has been included, the following variables are set, and they are accessible via JavaScript.<br />
+In JavaScript output, once the script has been included, each item is stored in a seperate variable as below, and they are accessible via JavaScript.<br />
 				<br />
 
 				<table border="1">
@@ -490,12 +491,20 @@ Once the script has been included, the following variables are set, and they are
 					</tr>
 
 				</table>
+				<br /><br />
+<b>JSON output:</b><br />
+<i>"output"</i> parameter generates JSON output which is suitable for parsing and AJAX functions. A sample JSON output is shown below:
 				<br />
+				<br />
+				<div class="codeDIV"><pre><code id="jsonoutput" class="json">
+please wait, it's loading....
+				</code></pre></div>
+				
 				<button onclick="loadDoc();" id="btnRefresh"> Refresh </button>
 				<br />
 				<br />
 
-For instance, to show the Google Scholar h-Index on a website, it is only required to write the variable on a page.<br />
+For instance, in order to print the Google Scholar h-Index on a page, it is only required to write its variable on a page.<br />
 				<br />
 				<div class="codeDIV"><pre><code class="javascript">
 document.write (Google_hIndex);
@@ -503,22 +512,13 @@ document.write (Google_hIndex);
 				<br />
 				<br />
 <b>Prefix:</b><br />
-In case if the "prefix" parameter has been set, the variables would be changed as below:<br />
-For instance, if the prefix has been set to "123abc", then:
+If "prefix" is set, its value will be added to the begining of all variable names.
+This can be set to prevent variable similarities (duplicated names) in JavaScript output, specially, when there are multiple profile calls.<br />
+For instance, if the prefix has been set to "123abc", then Google h-Index variable would be changed as follows:
 				<br />
 				<br />
 				<div class="codeDIV"><pre><code class="javascript">
 document.write (<b>123abc_</b>Google_hIndex);
-				</code></pre></div>
-
-				<br />
-				<br />				
-<b>JSON output:</b><br />
-<i>"output"</i> parameter generates JSON output which is suitable for parsing and AJAX functions. A sample JSON output is shown below:
-				<br />
-				<br />
-				<div class="codeDIV"><pre><code id="jsonoutput" class="json">
-please wait, it's loading....
 				</code></pre></div>
 				
 				<hr />
