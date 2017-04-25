@@ -382,11 +382,11 @@
 		if (strlen($ReID) > 0){
 			echo(PrefixCheck() . "ReID_ID = \"" . $ReID . "\";");
 			echo(PrefixCheck() . "ReID_URL = \"" . $ReIDURL . "\";");
-			echo(PrefixCheck() . "ResearcherID_totalArticleCount = \"" . $ResearcherID_totalArticleCount . "\";");
+			echo(PrefixCheck() . "ResearcherID_Documents = \"" . $ResearcherID_totalArticleCount . "\";");
 			echo(PrefixCheck() . "ResearcherID_articleCountForMetrics = \"" . $ResearcherID_articleCountForMetrics . "\";");
-			echo(PrefixCheck() . "ResearcherID_timesCited = \"" . $ResearcherID_timesCited . "\";");
-			echo(PrefixCheck() . "ResearcherID_averagePerItem = \"" . $ResearcherID_averagePerItem . "\";");
-			echo(PrefixCheck() . "ResearcherID_hindex = \"" . $ResearcherID_hindex . "\";");
+			echo(PrefixCheck() . "ResearcherID_Citations = \"" . $ResearcherID_timesCited . "\";");
+			echo(PrefixCheck() . "ResearcherID_AverageCitations = \"" . $ResearcherID_averagePerItem . "\";");
+			echo(PrefixCheck() . "ResearcherID_hIndex = \"" . $ResearcherID_hindex . "\";");
 			echo(PrefixCheck() . "ResearcherID_lastUpdatedString = \"" . $ResearcherID_lastUpdatedString . "\";");
 		}
 		
@@ -447,11 +447,11 @@
 			$strJSON .= "\"ResearcherID\":\r\n";
 			$strJSON .= "\t\"ID\":\"" . $ReID . "\";\r\n";
 			$strJSON .= "\t\"URL\":\"" . $ReIDURL . "\";\r\n";
-			$strJSON .= "\t\"totalArticleCount\":" . $ResearcherID_totalArticleCount . ",\r\n";
+			$strJSON .= "\t\"Documents\":" . $ResearcherID_totalArticleCount . ",\r\n";
 			$strJSON .= "\t\"articleCountForMetrics\":" . $ResearcherID_articleCountForMetrics . ",\r\n";
-			$strJSON .= "\t\"timesCited\":" . $ResearcherID_timesCited . ",\r\n";
-			$strJSON .= "\t\"averagePerItem\":" . $ResearcherID_averagePerItem . ",\r\n";
-			$strJSON .= "\t\"hindex\":" . $ResearcherID_hindex . ",\r\n";
+			$strJSON .= "\t\"Citations\":" . $ResearcherID_timesCited . ",\r\n";
+			$strJSON .= "\t\"AverageCitations\":" . $ResearcherID_averagePerItem . ",\r\n";
+			$strJSON .= "\t\"hIndex\":" . $ResearcherID_hindex . ",\r\n";
 			$strJSON .= "\t\"lastUpdatedString\":\"" . $ResearcherID_lastUpdatedString . "\"}\r\n";
 		}
 		$strJSON .= "}";		
