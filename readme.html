@@ -4,25 +4,84 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
+		<!--
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ"></script>
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?scopus=54413825200"></script>
 		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?reid=E-5776-2011"></script>
+		-->
 		<script>
 		function GetEduVar(varName){document.write (window[varName]);}
+		//GetEduVar("Google_ID");
 		
 		function loadDoc() {
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					document.getElementById("jsonoutput").innerHTML = this.responseText;
-				}else{
+					strJSON = this.responseText;
+					document.getElementById("jsonoutput").innerHTML = strJSON;
+					var objJSON = JSON.parse(strJSON);
+
+					Google_ID = objJSON.Google.ID;
+					Google_URL = objJSON.Google.URL;
+					Google_Citations = objJSON.Google.Citations;
+					Google_hIndex = objJSON.Google.hIndex;
+					Google_i10Index = objJSON.Google.i10Index;
+			
+					Scopus_ID = objJSON.Scopus.ID;
+					Scopus_URL = objJSON.Scopus.URL;
+					Scopus_Documents = objJSON.Scopus.Documents;
+					Scopus_hIndex = objJSON.Scopus.hIndex;
+					Scopus_CoAuthors = objJSON.Scopus.CoAuthors;
+					Scopus_References = objJSON.Scopus.References;
+
+					ReID_ID = objJSON.ResearcherID.ID;
+					ReID_URL = objJSON.ResearcherID.URL;
+					ResearcherID_Documents = objJSON.ResearcherID.Documents;
+					ResearcherID_articleCountForMetrics = objJSON.ResearcherID.articleCountForMetrics;
+					ResearcherID_Citations = objJSON.ResearcherID.Citations;
+					ResearcherID_AverageCitations = objJSON.ResearcherID.AverageCitations;
+					ResearcherID_hIndex = objJSON.ResearcherID.hIndex;
+					ResearcherID_lastUpdatedString = objJSON.ResearcherID.lastUpdatedString;
+					
+					reWriteTable(false);
+					document.getElementById("btnRefresh").disabled = false;
+
+				}else if (this.status != 0 && this.status != 200){
 					document.getElementById("jsonoutput").innerHTML = 'an error occured while loading the document.';
+					reWriteTable(true,"error occurred");
 				}
 			};
+			document.getElementById("btnRefresh").disabled = true;
+			reWriteTable(true,"please wait, it's loading...");
+			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
 			xhttp.open("GET", "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ&scopus=54413825200&reid=E-5776-2011&output=json", true);
 			xhttp.send();
 		}
-		document.onload = loadDoc();
+		
+		function reWriteTable(blnError,strErr = ""){
+			document.getElementById("Google_ID").innerHTML = blnError?strErr:Google_ID;
+			document.getElementById("Google_URL").innerHTML = blnError?strErr:Google_URL;
+			document.getElementById("Google_Citations").innerHTML = blnError?strErr:Google_Citations;
+			document.getElementById("Google_hIndex").innerHTML = blnError?strErr:Google_hIndex;
+			document.getElementById("Google_i10Index").innerHTML = blnError?strErr:Google_i10Index;
+			
+			document.getElementById("Scopus_ID").innerHTML = blnError?strErr:Scopus_ID;
+			document.getElementById("Scopus_URL").innerHTML = blnError?strErr:Scopus_URL;
+			document.getElementById("Scopus_Documents").innerHTML = blnError?strErr:Scopus_Documents;
+			document.getElementById("Scopus_hIndex").innerHTML = blnError?strErr:Scopus_hIndex;
+			document.getElementById("Scopus_CoAuthors").innerHTML = blnError?strErr:Scopus_CoAuthors;
+			document.getElementById("Scopus_References").innerHTML = blnError?strErr:Scopus_References;
+
+			document.getElementById("ReID_ID").innerHTML = blnError?strErr:ReID_ID;
+			document.getElementById("ReID_URL").innerHTML = blnError?strErr:ReID_URL;
+			document.getElementById("ResearcherID_Documents").innerHTML = blnError?strErr:ResearcherID_Documents;
+			document.getElementById("ResearcherID_articleCountForMetrics").innerHTML = blnError?strErr:ResearcherID_articleCountForMetrics;
+			document.getElementById("ResearcherID_Citations").innerHTML = blnError?strErr:ResearcherID_Citations;
+			document.getElementById("ResearcherID_AverageCitations").innerHTML = blnError?strErr:ResearcherID_AverageCitations;
+			document.getElementById("ResearcherID_hIndex").innerHTML = blnError?strErr:ResearcherID_hIndex;
+			document.getElementById("ResearcherID_lastUpdatedString").innerHTML = blnError?strErr:ResearcherID_lastUpdatedString;
+		}
+		window.onload = function(){loadDoc();};
 </script>
 
 		<style>
@@ -130,7 +189,7 @@ This code is open-source, and it can be used for non-commercial purposes.<br />
 				<hr />
 				<h3 id="KnownIssues">Known Issues</h3>
 				<ul>
-					<li>ResearcherID function sometimes stops working.</li>
+					<li>ResearcherID function sometimes fails to load and parse the data.</li>
 				</ul>
 
 				<hr />
@@ -214,14 +273,14 @@ Initial version<br />
 The script generator should be placed in the HEAD section of the HTML code as below:
 				<br />
 				<br />
-				<div class="codeDIV"><code>
+				<div class="codeDIV"><pre><code class="html">
 &lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>
 &amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>
 &amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>
 &amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>
 &amp;output=<b>&lt;javascript|json&gt;</b>
 &quot;&gt;&lt;/script&gt;
-				</code></div>
+				</code></pre></div>
 				<br />
 				<br />
 
@@ -314,132 +373,132 @@ Once the script has been included, the following variables are set, and they are
 					</tr>
 					<tr>
 						<td>Google_ID</td>
-						<td>
-							<script>GetEduVar("Google_ID");</script>
+						<td id="Google_ID">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Google_URL</td>
-						<td>
-							<script>GetEduVar("Google_URL");</script>
+						<td id="Google_URL">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Google_Citations</td>
-						<td>
-							<script>GetEduVar("Google_Citations");</script>
+						<td id="Google_Citations">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Google_hIndex</td>
-						<td>
-							<script>GetEduVar("Google_hIndex");</script>
+						<td id="Google_hIndex">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Google_i10Index</td>
-						<td>
-							<script>GetEduVar("Google_i10Index");</script>
+						<td id="Google_i10Index">
+							loading...
 						</td>
 					</tr>
 
 					<tr>
 						<td>Scopus_ID</td>
-						<td>
-							<script>GetEduVar("Scopus_ID");</script>
+						<td id="Scopus_ID">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_URL</td>
-						<td>
-							<script>GetEduVar("Scopus_URL");</script>
+						<td id="Scopus_URL">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_Documents</td>
-						<td>
-							<script>GetEduVar("Scopus_Documents");</script>
+						<td id="Scopus_Documents">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_hIndex</td>
-						<td>
-							<script>GetEduVar("Scopus_hIndex");</script>
+						<td id="Scopus_hIndex">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_CoAuthors</td>
-						<td>
-							<script>GetEduVar("Scopus_CoAuthors");</script>
+						<td id="Scopus_CoAuthors">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_References</td>
-						<td>
-							<script>GetEduVar("Scopus_References");</script>
+						<td id="Scopus_References">
+							loading...
 						</td>
 					</tr>
 
 
 					<tr>
 						<td>ReID_ID</td>
-						<td>
-							<script>GetEduVar("ReID_ID");</script>
+						<td id="ReID_ID">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ReID_URL</td>
-						<td>
-							<script>GetEduVar("ReID_URL");</script>
+						<td id="ReID_URL">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_Documents</td>
-						<td>
-							<script>GetEduVar("ResearcherID_Documents");</script>
+						<td id="ResearcherID_Documents">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_articleCountForMetrics</td>
-						<td>
-							<script>GetEduVar("ResearcherID_articleCountForMetrics");</script>
+						<td id="ResearcherID_articleCountForMetrics">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_Citations</td>
-						<td>
-							<script>GetEduVar("ResearcherID_Citations");</script>
+						<td id="ResearcherID_Citations">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_AverageCitations</td>
-						<td>
-							<script>GetEduVar("ResearcherID_AverageCitations");</script>
+						<td id="ResearcherID_AverageCitations">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_hIndex</td>
-						<td>
-							<script>GetEduVar("ResearcherID_hIndex");</script>
+						<td id="ResearcherID_hIndex">
+							loading...
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_lastUpdatedString</td>
-						<td>
-							<script>GetEduVar("ResearcherID_lastUpdatedString");</script>
+						<td id="ResearcherID_lastUpdatedString">
+							loading...
 						</td>
 					</tr>
 
 				</table>
 				<br />
+				<button onclick="loadDoc();" id="btnRefresh"> Refresh </button>
+				<br />
 				<br />
 
 For instance, to show the Google Scholar h-Index on a website, it is only required to write the variable on a page.<br />
 				<br />
-				<div class="codeDIV"><pre><code>
-&lt;script language=&quot;javascript&quot;&gt;
+				<div class="codeDIV"><pre><code class="javascript">
 document.write (Google_hIndex);
-&lt;/script&gt;
 				</code></pre></div>
 				<br />
 				<br />
@@ -448,10 +507,8 @@ In case if the "prefix" parameter has been set, the variables would be changed a
 For instance, if the prefix has been set to "123abc", then:
 				<br />
 				<br />
-				<div class="codeDIV"><pre><code>
-&lt;script language=&quot;javascript&quot;&gt;
+				<div class="codeDIV"><pre><code class="javascript">
 document.write (<b>123abc_</b>Google_hIndex);
-&lt;/script&gt;
 				</code></pre></div>
 
 				<br />
@@ -460,9 +517,10 @@ document.write (<b>123abc_</b>Google_hIndex);
 <i>"output"</i> parameter generates JSON output which is suitable for parsing and AJAX functions. A sample JSON output is shown below:
 				<br />
 				<br />
-				<div class="codeDIV"><pre><code id="jsonoutput">
+				<div class="codeDIV"><pre><code id="jsonoutput" class="json">
 please wait, it's loading....
 				</code></pre></div>
+				
 				<hr />
 				<h3 id="SourceCode">Source Code</h3>
 You can find the source code in Github repository at <a href="https://github.com/kavehbc/Edu-Stats" target="_blank">https://github.com/kavehbc/Edu-Stats</a>.<br />
