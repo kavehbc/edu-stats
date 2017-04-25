@@ -424,11 +424,11 @@ Function ScriptAll()
 	If Len(ReID) > 0 Then
 	Response.Write PrefixCheck() & "ReID_ID = """ & ReID & """;"
 	Response.Write PrefixCheck() & "ReID_URL = """ & ReIDURL & """;"
-	Response.Write PrefixCheck() & "ResearcherID_totalArticleCount = """ & ResearcherID_totalArticleCount & """;"
+	Response.Write PrefixCheck() & "ResearcherID_Documents = """ & ResearcherID_totalArticleCount & """;"
 	Response.Write PrefixCheck() & "ResearcherID_articleCountForMetrics = """ & ResearcherID_articleCountForMetrics & """;"
-	Response.Write PrefixCheck() & "ResearcherID_timesCited = """ & ResearcherID_timesCited & """;"
-	Response.Write PrefixCheck() & "ResearcherID_averagePerItem = """ & ResearcherID_averagePerItem & """;"
-	Response.Write PrefixCheck() & "ResearcherID_hindex = """ & ResearcherID_hindex & """;"
+	Response.Write PrefixCheck() & "ResearcherID_Citations = """ & ResearcherID_timesCited & """;"
+	Response.Write PrefixCheck() & "ResearcherID_AverageCitations = """ & ResearcherID_averagePerItem & """;"
+	Response.Write PrefixCheck() & "ResearcherID_hIndex = """ & ResearcherID_hindex & """;"
 	Response.Write PrefixCheck() & "ResearcherID_lastUpdatedString = """ & ResearcherID_lastUpdatedString & """;"
 	End If
 	
@@ -464,11 +464,11 @@ Function JSONAll()
 		strJSON = strJSON & """ResearcherID"":" & vbCrLf
 		strJSON = strJSON & vbTab & "{""ID"":""" & ReID & """," & vbCrLf
 		strJSON = strJSON & vbTab & """URL"":""" & ReIDURL & """," & vbCrLf
-		strJSON = strJSON & vbTab & """totalArticleCount"":" & ResearcherID_totalArticleCount & "," & vbCrLf
+		strJSON = strJSON & vbTab & """Documents"":" & ResearcherID_totalArticleCount & "," & vbCrLf
 		strJSON = strJSON & vbTab & """articleCountForMetrics"":" & ResearcherID_articleCountForMetrics & "," & vbCrLf
-		strJSON = strJSON & vbTab & """timesCited"":" & ResearcherID_timesCited & "," & vbCrLf
-		strJSON = strJSON & vbTab & """averagePerItem"":" & ResearcherID_averagePerItem & "," & vbCrLf
-		strJSON = strJSON & vbTab & """hindex"":" & ResearcherID_hindex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """Citations"":" & ResearcherID_timesCited & "," & vbCrLf
+		strJSON = strJSON & vbTab & """AverageCitations"":" & ResearcherID_averagePerItem & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hIndex"":" & ResearcherID_hindex & "," & vbCrLf
 		strJSON = strJSON & vbTab & """lastUpdatedString"":""" & ResearcherID_lastUpdatedString & """}" & vbCrLf
 	End If
 	
