@@ -388,8 +388,8 @@
 		}
 		
 		if (strlen($ReID) > 0){
-			echo(PrefixCheck() . "ReID_ID = \"" . $ReID . "\";");
-			echo(PrefixCheck() . "ReID_URL = \"" . $ReIDURL . "\";");
+			echo(PrefixCheck() . "ResearcherID_ID = \"" . $ReID . "\";");
+			echo(PrefixCheck() . "ResearcherID_URL = \"" . $ReIDURL . "\";");
 			echo(PrefixCheck() . "ResearcherID_Documents = \"" . $ResearcherID_totalArticleCount . "\";");
 			echo(PrefixCheck() . "ResearcherID_articleCountForMetrics = \"" . $ResearcherID_articleCountForMetrics . "\";");
 			echo(PrefixCheck() . "ResearcherID_Citations = \"" . $ResearcherID_timesCited . "\";");
