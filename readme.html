@@ -5,9 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 		<!--
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ"></script>
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?scopus=54413825200"></script>
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?reid=E-5776-2011"></script>
+		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=7ftCdTQAAAAJ"></script>
+		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?scopus=54413825200"></script>
+		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?reid=E-5776-2011"></script>
 		-->
 		<script>
 		function GetEduVar(varName){document.write (window[varName]);}
@@ -55,7 +55,7 @@
 			document.getElementById("btnRefresh").disabled = true;
 			reWriteTable(true,"please wait, it's loading...");
 			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
-			xhttp.open("GET", "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=7ftCdTQAAAAJ&scopus=54413825200&reid=E-5776-2011&output=json", true);
+			xhttp.open("GET", "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=7ftCdTQAAAAJ&scopus=54413825200&reid=E-5776-2011&output=json", true);
 			xhttp.send();
 		}
 		
@@ -275,7 +275,7 @@ The script generator should be placed in the HEAD section of the HTML code as be
 				<br />
 				<br />
 				<div class="codeDIV"><pre><code class="html">
-&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.asp?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>
+&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>
 &amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>
 &amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>
 &amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>
