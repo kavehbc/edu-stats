@@ -8,6 +8,13 @@
 	// Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
 	// v1.9.1: 24 April 2017
 	//**************************************************
+	error_reporting(E_ERROR | E_PARSE);
+	//error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	ini_set('safe_mode', false);
+	//ini_set("log_errors", 1);
+	//ini_set("error_log", "php-error.log");
 	
 	ini_set("user_agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
 	ini_set('allow_url_fopen',1);
@@ -29,6 +36,7 @@
 		CURLINFO_HEADER_OUT    => true,
 		CURLOPT_SSL_VERIFYPEER => false,     // Disabled SSL Cert checks
 		CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+		CURLOPT_USERAGENT      => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36",
 		CURLOPT_COOKIE         => $cookiesIn
         );
 		
@@ -161,7 +169,7 @@
 		
 		$PageContent = get_web_page($scopusurl);
 		$Code = $PageContent['content'];
-		
+				
 		$SearchFROM = "'see all references cited by this author'";
 		$strTO = "</a>";
 		$dblFROM = strpos($Code,$SearchFROM,1);
@@ -434,7 +442,7 @@
 		if (strlen($SScopusID) > 0){
 			$strJSON .= ",";
 			$strJSON .= "\"Scopus\":\r\n";
-			$strJSON .= "\t\"ID\":\"" . $SScopusID . "\",\r\n";
+			$strJSON .= "\t{\"ID\":\"" . $SScopusID . "\",\r\n";
 			$strJSON .= "\t\"URL\":\"" . $SURL . "\",\r\n";
 			$strJSON .= "\t\"Documents\":" . $SDocuments . ",\r\n";
 			$strJSON .= "\t\"hIndex\":" . $ShIndex . ",\r\n";
@@ -445,8 +453,8 @@
 		if (strlen($ReID) > 0){
 			$strJSON .= ",";
 			$strJSON .= "\"ResearcherID\":\r\n";
-			$strJSON .= "\t\"ID\":\"" . $ReID . "\";\r\n";
-			$strJSON .= "\t\"URL\":\"" . $ReIDURL . "\";\r\n";
+			$strJSON .= "\t{\"ID\":\"" . $ReID . "\",\r\n";
+			$strJSON .= "\t\"URL\":\"" . $ReIDURL . "\",\r\n";
 			$strJSON .= "\t\"Documents\":" . $ResearcherID_totalArticleCount . ",\r\n";
 			$strJSON .= "\t\"articleCountForMetrics\":" . $ResearcherID_articleCountForMetrics . ",\r\n";
 			$strJSON .= "\t\"Citations\":" . $ResearcherID_timesCited . ",\r\n";
