@@ -422,8 +422,8 @@ Function ScriptAll()
 	End If
 		
 	If Len(ReID) > 0 Then
-	Response.Write PrefixCheck() & "ReID_ID = """ & ReID & """;"
-	Response.Write PrefixCheck() & "ReID_URL = """ & ReIDURL & """;"
+	Response.Write PrefixCheck() & "ResearcherID_ID = """ & ReID & """;"
+	Response.Write PrefixCheck() & "ResearcherID_URL = """ & ReIDURL & """;"
 	Response.Write PrefixCheck() & "ResearcherID_Documents = """ & ResearcherID_totalArticleCount & """;"
 	Response.Write PrefixCheck() & "ResearcherID_articleCountForMetrics = """ & ResearcherID_articleCountForMetrics & """;"
 	Response.Write PrefixCheck() & "ResearcherID_Citations = """ & ResearcherID_timesCited & """;"
