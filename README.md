@@ -3,5 +3,10 @@ Edu-Stats is a parser to extract the scholar details of academicians such as h-i
 
 For more information, you can check "readme.html" or http://kaveh.bakhtiyari.com/code/edu-stats.html
 
+# Supported Profiles
+Google Scholar, Scopus and ResearcherID
+
+*Note: ResearchGate function has been removed.
+
 # PHP Edition
 In order to use the PHP edition, make sure to enable "php_curl.dll" and "php_openssl.dll" extensions in php.ini. 
