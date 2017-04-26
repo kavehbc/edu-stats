@@ -21,68 +21,85 @@
 					document.getElementById("jsonoutput").innerHTML = strJSON;
 					var objJSON = JSON.parse(strJSON);
 
+					if (document.getElementById("fldGoogle").value.length > 0){
 					Google_ID = objJSON.Google.ID;
 					Google_URL = objJSON.Google.URL;
 					Google_Citations = objJSON.Google.Citations;
 					Google_hIndex = objJSON.Google.hIndex;
 					Google_i10Index = objJSON.Google.i10Index;
-			
+					}
+					if (document.getElementById("fldScopus").value.length > 0){
 					Scopus_ID = objJSON.Scopus.ID;
 					Scopus_URL = objJSON.Scopus.URL;
 					Scopus_Documents = objJSON.Scopus.Documents;
 					Scopus_hIndex = objJSON.Scopus.hIndex;
 					Scopus_CoAuthors = objJSON.Scopus.CoAuthors;
 					Scopus_References = objJSON.Scopus.References;
-
-					ReID_ID = objJSON.ResearcherID.ID;
-					ReID_URL = objJSON.ResearcherID.URL;
+					}
+					if (document.getElementById("fldResearcherID").value.length > 0){
+					ResearcherID_ID = objJSON.ResearcherID.ID;
+					ResearcherID_URL = objJSON.ResearcherID.URL;
 					ResearcherID_Documents = objJSON.ResearcherID.Documents;
 					ResearcherID_articleCountForMetrics = objJSON.ResearcherID.articleCountForMetrics;
 					ResearcherID_Citations = objJSON.ResearcherID.Citations;
 					ResearcherID_AverageCitations = objJSON.ResearcherID.AverageCitations;
 					ResearcherID_hIndex = objJSON.ResearcherID.hIndex;
 					ResearcherID_lastUpdatedString = objJSON.ResearcherID.lastUpdatedString;
+					}
 					
 					reWriteTable(false);
-					document.getElementById("btnRefresh").disabled = false;
+					document.getElementById("btnSend").disabled = false;
 
 				}else if (this.status != 0 && this.status != 200){
 					document.getElementById("jsonoutput").innerHTML = 'error ' + this.status + ' occured!';
 					reWriteTable(true,"error " + this.status + " occurred!");
-					document.getElementById("btnRefresh").disabled = false;
+					document.getElementById("btnSend").disabled = false;
 				}
 			};
-			document.getElementById("btnRefresh").disabled = true;
+			document.getElementById("btnSend").disabled = true;
 			reWriteTable(true,"please wait, it's loading...");
 			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
-			xhttp.open("GET", "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=7ftCdTQAAAAJ&scopus=54413825200&reid=E-5776-2011&output=json", true);
+			
+			strURL = "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?output=json";
+			if (document.getElementById("fldGoogle").value.length > 0)
+				strURL = strURL + "&google=" + document.getElementById("fldGoogle").value;
+			if (document.getElementById("fldScopus").value.length > 0)
+				strURL = strURL + "&scopus=" + document.getElementById("fldScopus").value;
+			if (document.getElementById("fldResearcherID").value.length > 0)
+				strURL = strURL + "&reid=" + document.getElementById("fldResearcherID").value;
+						
+			xhttp.open("GET", strURL, true);
 			xhttp.send();
 		}
 		
 		function reWriteTable(blnError,strErr = ""){
+			if (document.getElementById("fldGoogle").value.length > 0){
 			document.getElementById("Google_ID").innerHTML = blnError?strErr:Google_ID;
 			document.getElementById("Google_URL").innerHTML = blnError?strErr:Google_URL;
 			document.getElementById("Google_Citations").innerHTML = blnError?strErr:Google_Citations;
 			document.getElementById("Google_hIndex").innerHTML = blnError?strErr:Google_hIndex;
 			document.getElementById("Google_i10Index").innerHTML = blnError?strErr:Google_i10Index;
-			
+			}
+			if (document.getElementById("fldScopus").value.length > 0){
 			document.getElementById("Scopus_ID").innerHTML = blnError?strErr:Scopus_ID;
 			document.getElementById("Scopus_URL").innerHTML = blnError?strErr:Scopus_URL;
 			document.getElementById("Scopus_Documents").innerHTML = blnError?strErr:Scopus_Documents;
 			document.getElementById("Scopus_hIndex").innerHTML = blnError?strErr:Scopus_hIndex;
 			document.getElementById("Scopus_CoAuthors").innerHTML = blnError?strErr:Scopus_CoAuthors;
 			document.getElementById("Scopus_References").innerHTML = blnError?strErr:Scopus_References;
-
-			document.getElementById("ReID_ID").innerHTML = blnError?strErr:ReID_ID;
-			document.getElementById("ReID_URL").innerHTML = blnError?strErr:ReID_URL;
+			}
+			if (document.getElementById("fldResearcherID").value.length > 0){
+			document.getElementById("ResearcherID_ID").innerHTML = blnError?strErr:ResearcherID_ID;
+			document.getElementById("ResearcherID_URL").innerHTML = blnError?strErr:ResearcherID_URL;
 			document.getElementById("ResearcherID_Documents").innerHTML = blnError?strErr:ResearcherID_Documents;
 			document.getElementById("ResearcherID_articleCountForMetrics").innerHTML = blnError?strErr:ResearcherID_articleCountForMetrics;
 			document.getElementById("ResearcherID_Citations").innerHTML = blnError?strErr:ResearcherID_Citations;
 			document.getElementById("ResearcherID_AverageCitations").innerHTML = blnError?strErr:ResearcherID_AverageCitations;
 			document.getElementById("ResearcherID_hIndex").innerHTML = blnError?strErr:ResearcherID_hIndex;
 			document.getElementById("ResearcherID_lastUpdatedString").innerHTML = blnError?strErr:ResearcherID_lastUpdatedString;
+			}
 		}
-		window.onload = function(){loadDoc();};
+		//window.onload = function(){loadDoc();};
 </script>
 
 		<style>
@@ -364,9 +381,22 @@ At least one of the parameters should be set.<br />
 				<hr />
 				<h3 id="Demo">Variables &amp; Demo</h3>
 
+				Please fill the following fields to test the demo version. At least one of the following fields should be completed. 
+<br /><br />
+
+Google Scholar ID:
+<input type="text" name="fldGoogle" id="fldGoogle" value="7ftCdTQAAAAJ" />
+
+Scopus ID:
+<input type="text" name="fldScopus" id="fldScopus" value="54413825200" />
+
+ResearcherID ID:
+<input type="text" name="fldResearcherID" id="fldResearcherID" value="E-5776-2011" />
+<input type="button" name="btnSend" id="btnSend" value=" Retrieve Data " onclick="loadDoc();" />
+
+<br /><br />
 In JavaScript output, once the script has been included, each item is stored in a seperate variable as below, and they are accessible via JavaScript.<br />
 				<br />
-
 				<table border="1">
 					<tr>
 						<th>Variable</th>
@@ -375,118 +405,118 @@ In JavaScript output, once the script has been included, each item is stored in 
 					<tr>
 						<td>Google_ID</td>
 						<td id="Google_ID">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Google_URL</td>
 						<td id="Google_URL">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Google_Citations</td>
 						<td id="Google_Citations">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Google_hIndex</td>
 						<td id="Google_hIndex">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Google_i10Index</td>
 						<td id="Google_i10Index">
-							loading...
+							n/a
 						</td>
 					</tr>
 
 					<tr>
 						<td>Scopus_ID</td>
 						<td id="Scopus_ID">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_URL</td>
 						<td id="Scopus_URL">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_Documents</td>
 						<td id="Scopus_Documents">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_hIndex</td>
 						<td id="Scopus_hIndex">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_CoAuthors</td>
 						<td id="Scopus_CoAuthors">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>Scopus_References</td>
 						<td id="Scopus_References">
-							loading...
+							n/a
 						</td>
 					</tr>
 
 
 					<tr>
-						<td>ReID_ID</td>
-						<td id="ReID_ID">
-							loading...
+						<td>ResearcherID_ID</td>
+						<td id="ResearcherID_ID">
+							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ReID_URL</td>
-						<td id="ReID_URL">
-							loading...
+						<td>ResearcherID_URL</td>
+						<td id="ResearcherID_URL">
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_Documents</td>
 						<td id="ResearcherID_Documents">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_articleCountForMetrics</td>
 						<td id="ResearcherID_articleCountForMetrics">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_Citations</td>
 						<td id="ResearcherID_Citations">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_AverageCitations</td>
 						<td id="ResearcherID_AverageCitations">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_hIndex</td>
 						<td id="ResearcherID_hIndex">
-							loading...
+							n/a
 						</td>
 					</tr>
 					<tr>
 						<td>ResearcherID_lastUpdatedString</td>
 						<td id="ResearcherID_lastUpdatedString">
-							loading...
+							n/a
 						</td>
 					</tr>
 
@@ -497,11 +527,10 @@ In JavaScript output, once the script has been included, each item is stored in 
 				<br />
 				<br />
 				<div class="codeDIV"><pre><code id="jsonoutput" class="json">
-please wait, it's loading....
+n/a
 				</code></pre></div>
 				
-				<button onclick="loadDoc();" id="btnRefresh"> Refresh </button>
-				<br />
+
 				<br />
 
 For instance, in order to print the Google Scholar h-Index on a page, it is only required to write its variable on a page.<br />
@@ -509,7 +538,6 @@ For instance, in order to print the Google Scholar h-Index on a page, it is only
 				<div class="codeDIV"><pre><code class="javascript">
 document.write (Google_hIndex);
 				</code></pre></div>
-				<br />
 				<br />
 <b>Prefix:</b><br />
 If "prefix" is set, its value will be added to the begining of all variable names.
