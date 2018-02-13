@@ -1,21 +1,21 @@
 <%@Language="VBScript" %>
 <%
 '**************************************************
-' Edu-Stats v.1.9.1
+' Edu-Stats v.2.0.0
 ' Academic Statistics Parser
-' Google Scholar, Scopus, ResearcherID
+' Google Scholar, Scopus, ResearcherID, Mendeley
 '
 '
 ' Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-' v1.9.1: 24 April 2017
+' v2.0.0: 13 February 2018
 '**************************************************
 'Option Explicit
 Server.ScriptTimeOut = 2147483647
 Server.ScriptTimeOut = 7000
 'On Error Resume Next
 
-EduStatsVersion = "1.9.1"
-UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
+EduStatsVersion = "2.0.0"
+UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36"
 
 'Google Scholar Variables
 GCitations = -1
@@ -23,10 +23,10 @@ GhIndex = -1
 Gi10Index = -1
 
 'Scopus Variables
-SDocuments = -1
-ShIndex = -1
-SCoAuthors = -1
-SReferences = -1
+Scopus_Documents = -1
+Scopus_hIndex = -1
+Scopus_CoAuthors = -1
+Scopus_CitationDocuments = -1
 
 'ResearcherID Variables
 ResearcherID_totalArticleCount = -1
@@ -36,9 +36,18 @@ ResearcherID_averagePerItem = -1
 ResearcherID_hindex = -1
 ResearcherID_lastUpdatedString = -1
 
+'Mendeley Variables
+Mendeley_Media = -1
+Mendeley_hIndex = -1
+Mendeley_Citations = -1
+Mendeley_Readers = -1
+Mendeley_Views = -1
+
 GScholar = Request("google")
-SScopusID = Request("scopus")
+ScopusID = Request("scopus")
 ReID = Request("reid")
+MendeleyID = Request("mendeley")
+
 prefix = Request("prefix")
 output = Request("output")
 
@@ -48,14 +57,19 @@ If Len(GScholar) > 0 Then
 	GoogleScholar(GURL)
 End If
 
-If Len(SScopusID) > 0 Then
-	SURL = "https://www.scopus.com/authid/detail.uri?authorId=" & SScopusID
-	Scopus(SURL)
+If Len(ScopusID) > 0 Then
+	ScopusURL = "https://www.scopus.com/authid/detail.uri?authorId=" & SScopusID
+	Scopus(ScopusURL)
 End If
 
 If Len(ReID) > 0 Then
 	ReIDURL = "http://www.researcherid.com/rid/" & ReID
 	ResearcherID(ReIDURL)
+End If
+
+If Len(MendeleyID) > 0 Then
+	MendeleyURL = "https://www.mendeley.com/profiles/" & MendeleyID & "/stats/"
+	Mendeley(MendeleyURL)
 End If
 
 Select Case output
@@ -86,7 +100,7 @@ If Int(xobj.Status) = 200 Then
 	Code = xobj.ResponseText
 	pageSize = Len(Code)
 Else
-	Code = "Server can not accessible at the moment!"
+	Code = "Server is not accessible at the moment!"
 	pageSize = 0
 End If
 
@@ -127,12 +141,10 @@ Params = ""
 'Set Xobj = Server.CreateObject("Msxml2.XMLHTTP")
 Set Xobj = Server.CreateObject("Msxml2.ServerXMLHTTP.3.0")
 Xobj.Open "GET",URL,false
-Xobj.SetRequestHeader "User-Agent", UserAgent
-Xobj.SetRequestHeader "Referer", URL
-'Xobj.SetRequestHeader "Content-type", "application/x-www-form-urlencoded"
+Xobj.setRequestHeader "User-Agent", UserAgent
 Xobj.SetRequestHeader "Content-type", "text/html"
-'Xobj.SetRequestHeader "Content-length", Len(Params)
 Xobj.SetRequestHeader "Connection", "close"
+
 
 Xobj.Send
 
@@ -142,7 +154,7 @@ If Int(xobj.Status) = 200 Then
 	'strCookies = Xobj.getAllResponseHeaders()
 	pageSize = Len(Code)
 Else
-	Code = "Server can not accesible at the moment!"
+	Code = "Server is not accessible at the moment!"
 	pageSize = 0
 End If
 		 
@@ -151,11 +163,11 @@ Set Xobj = Nothing
 Params = ""
 
 Set Xobj = Server.CreateObject("Msxml2.ServerXMLHTTP.3.0")
-Xobj.Open "POST",URL,false
+Xobj.Open "GET",URL,false
 Xobj.setRequestHeader "User-Agent", UserAgent
 Xobj.SetRequestHeader "Referer", URL
 Xobj.setRequestHeader "Cookie", strCookies
-Xobj.SetRequestHeader "Content-type", "application/x-www-form-urlencoded"
+Xobj.SetRequestHeader "Content-type", "text/html"
 Xobj.SetRequestHeader "Content-length", Len(Params) + Len (strCookies)
 Xobj.SetRequestHeader "Connection", "close"
 
@@ -167,34 +179,18 @@ If Int(xobj.Status) = 200 Then
 	'strCookies = Xobj.getAllResponseHeaders()
 	pageSize = Len(Code)
 Else
-	Code = "Server can not accessible at the moment!"
+	Code = "Server is not accessible at the moment!"
 	pageSize = 0
 End If
 
-SearchFROM = "'see all references cited by this author'"
-strTO = "</a>"
-dblFROM = InStr(1,Code,SearchFROM)
-SearchFROM = ">"
-dblFROM = InStr(dblFROM,Code,SearchFROM)
-dblFROM = dblFROM + Len(SearchFROM)
-dblTO = InStr(dblFROM,Code,strTO)
-startPoint = dblTO
-dblTO = dblTO - dblFROM
-
-strResult = Trim(Mid(Code,dblFROM,dblTO))
-	If Len(strResult) > 0 Then
-		strConverted = Replace(strResult,",","")
-		SReferences = strConverted
-	End If
 
 
-strStart = """addInfoRow row1"""
-startPoint = InStr(1,Code,strStart)
+SearchFROM = "<section id=""authorDetailsHindex"">"
+startPoint = InStr(1,Code,SearchFROM)
 
-SearchFROM = " title='View a list of documents by this author below'>"
-strTO = "</a>"
+SearchFROM = "<span class=""fontLarge"">"
+strTO = "</span>"
 dblFROM = InStr(startPoint,Code,SearchFROM)
-
 dblFROM = dblFROM + Len(SearchFROM)
 dblTO = InStr(dblFROM,Code,strTO)
 startPoint = dblTO
@@ -203,13 +199,47 @@ dblTO = dblTO - dblFROM
 strResult = Trim(Mid(Code,dblFROM,dblTO))
 	If Len(strResult) > 0 Then
 		strConverted = Replace(strResult,",","")
-		SDocuments = CDbl(strConverted)
+		Scopus_hIndex = strConverted
 	End If
 
 
+SearchFROM = "<section id=""authorDetailsDocumentsByAuthor"">"
+startPoint = InStr(1,Code,SearchFROM)
 
-strStart = """addInfoRow row3"""
-startPoint = InStr(startPoint,Code,strStart)
+SearchFROM = "<span class=""fontLarge pull-left"">"
+strTO = "</span>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Scopus_Documents = strConverted
+	End If
+
+SearchFROM = "<section id=""authorDetailsTotalCitations"">"
+startPoint = InStr(1,Code,SearchFROM)
+
+SearchFROM = "<span class=""btnText"">"
+strTO = "</span>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Scopus_CitationDocuments = strConverted
+	End If
+
+
+SearchFROM = "<a id=""coAuthLi"" data-toggle=""tab"""
+startPoint = InStr(1,Code,SearchFROM)
 
 SearchFROM = "<span>"
 strTO = "</span>"
@@ -222,27 +252,8 @@ dblTO = dblTO - dblFROM
 strResult = Trim(Mid(Code,dblFROM,dblTO))
 	If Len(strResult) > 0 Then
 		strConverted = Replace(strResult,",","")
-		ShIndex = CDbl(strConverted)
+		Scopus_CoAuthors = strConverted
 	End If
- 
- 
-strStart = """addInfoRow row4"""
-startPoint = InStr(startPoint,Code,strStart)
-
-SearchFROM = " data-title='View a list of authors who have published with this author below'>"
-strTO = "</a>"
-dblFROM = InStr(startPoint,Code,SearchFROM)
-dblFROM = dblFROM + Len(SearchFROM)
-dblTO = InStr(dblFROM,Code,strTO)
-startPoint = dblTO
-dblTO = dblTO - dblFROM
-
-strResult = Trim(Mid(Code,dblFROM,dblTO))
-	If Len(strResult) > 0 Then
-		strConverted = Replace(strResult,",","")
-		SCoAuthors = strConverted
-	End If
-
 
 End Function
 
@@ -271,13 +282,11 @@ If Int(xobj.Status) = 200 Then
 	Code = xobj.ResponseText
 	pageSize = Len(Code)
 Else
-	Code = "Server can not accessible at the moment!"
+	Code = "Server is not accessible at the moment!"
 	pageSize = 0
 End If
 		 
 Set Xobj = Nothing
-
-
 
 
 startPoint = 1
@@ -291,10 +300,6 @@ startPoint = dblTO
 dblTO = dblTO - dblFROM
 
 devReID = Trim(Mid(Code,dblFROM,dblTO))
-
-
-
-
 
 
 param = "key=" & devReID & "&listId=LIST1&displayName=My%20Publications&publicProfile=true&_="
@@ -329,7 +334,7 @@ If Int(xobj.Status) = 200 Then
 	'strCookies = Xobj.getAllResponseHeaders()
 	pageSize = Len(Code)
 Else
-	Code = "Server can not accessible at the moment!"
+	Code = "Server is not accessible at the moment!"
 	pageSize = 0
 End If
 
@@ -391,6 +396,103 @@ ResearcherID_lastUpdatedString = Trim(Mid(Code,dblFROM,dblTO))
 End Function
 
 
+
+
+Function Mendeley(URL)
+
+Params = ""
+
+Set Xobj = Server.CreateObject("Msxml2.ServerXMLHTTP.3.0")
+Xobj.Open "GET",URL,false
+Xobj.setRequestHeader "User-Agent", UserAgent
+Xobj.SetRequestHeader "Content-type", "text/html"
+Xobj.SetRequestHeader "Connection", "close"
+
+Xobj.Send
+
+If Int(xobj.Status) = 200 Then
+	Code = xobj.ResponseText
+	pageSize = Len(Code)
+Else
+	Code = "Server is not accessible at the moment!"
+	pageSize = 0
+End If
+
+SearchFROM = "Media mentions</span></h3></header><data class=""number"" value="""
+strTO = """>"
+dblFROM = InStr(1,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Mendeley_Media = strConverted
+	End If
+
+
+SearchFROM = "h-index</span></h3></header><data class=""number"" value="""
+strTO = """>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Mendeley_hIndex = CDbl(strConverted)
+	End If
+
+SearchFROM = "Citations</span></h3></header><data class=""number"" value="""
+strTO = """>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Mendeley_Citations = CDbl(strConverted)
+	End If
+
+SearchFROM = "Readers</span></h3></header><data class=""number"" value="""
+strTO = """>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Mendeley_Readers = CDbl(strConverted)
+	End If
+
+SearchFROM = "Views</span></h3></header><data class=""number"" value="""
+strTO = """>"
+dblFROM = InStr(startPoint,Code,SearchFROM)
+dblFROM = dblFROM + Len(SearchFROM)
+dblTO = InStr(dblFROM,Code,strTO)
+startPoint = dblTO
+dblTO = dblTO - dblFROM
+
+strResult = Trim(Mid(Code,dblFROM,dblTO))
+	If Len(strResult) > 0 Then
+		strConverted = Replace(strResult,",","")
+		Mendeley_Views = CDbl(strConverted)
+	End If
+
+
+End Function
+
+
 Function PrefixCheck()
     If Len(prefix) > 1 AND Len(prefix) <= 10 Then
         PrefixCheck = prefix & "_"
@@ -412,13 +514,13 @@ Function ScriptAll()
 	Response.Write PrefixCheck() & "Google_i10Index = " & Gi10Index & ";"
 	End If
 	
-	If Len(SScopusID) > 0 Then
-	Response.Write PrefixCheck() & "Scopus_ID = """ & SScopusID & """;"
-	Response.Write PrefixCheck() & "Scopus_URL = """ & SURL & """;"
-	Response.Write PrefixCheck() & "Scopus_Documents = " & SDocuments & ";"
-	Response.Write PrefixCheck() & "Scopus_hIndex = " & ShIndex & ";"
-	Response.Write PrefixCheck() & "Scopus_CoAuthors = " & SCoAuthors & ";"
-	Response.Write PrefixCheck() & "Scopus_References = " & SReferences & ";"
+	If Len(ScopusID) > 0 Then
+	Response.Write PrefixCheck() & "Scopus_ID = """ & ScopusID & """;"
+	Response.Write PrefixCheck() & "Scopus_URL = """ & ScopusURL & """;"
+	Response.Write PrefixCheck() & "Scopus_Documents = " & Scopus_Documents & ";"
+	Response.Write PrefixCheck() & "Scopus_hIndex = " & Scopus_hIndex & ";"
+	Response.Write PrefixCheck() & "Scopus_CoAuthors = " & Scopus_CoAuthors & ";"
+	Response.Write PrefixCheck() & "Scopus_CitationDocuments = " & Scopus_CitationDocuments & ";"
 	End If
 		
 	If Len(ReID) > 0 Then
@@ -430,6 +532,16 @@ Function ScriptAll()
 	Response.Write PrefixCheck() & "ResearcherID_AverageCitations = """ & ResearcherID_averagePerItem & """;"
 	Response.Write PrefixCheck() & "ResearcherID_hIndex = """ & ResearcherID_hindex & """;"
 	Response.Write PrefixCheck() & "ResearcherID_lastUpdatedString = """ & ResearcherID_lastUpdatedString & """;"
+	End If
+
+	If Len(MendeleyID) > 0 Then
+	Response.Write PrefixCheck() & "Mendeley_ID = """ & MendeleyID & """;"
+	Response.Write PrefixCheck() & "Mendeley_URL = """ & MendeleyURL & """;"
+	Response.Write PrefixCheck() & "Mendeley_Media = " & Mendeley_Media & ";"
+	Response.Write PrefixCheck() & "Mendeley_hIndex = " & Mendeley_hIndex & ";"
+	Response.Write PrefixCheck() & "Mendeley_Citations = " & Mendeley_Citations & ";"
+	Response.Write PrefixCheck() & "Mendeley_Readers = " & Mendeley_Readers & ";"
+	Response.Write PrefixCheck() & "Mendeley_Views = " & Mendeley_Views & ";"
 	End If
 	
 End Function
@@ -448,15 +560,15 @@ Function JSONAll()
 		strJSON = strJSON & vbTab & """i10Index"":" & Gi10Index & "}" & vbCrLf
 	End If
 	
-	If Len(SScopusID) > 0 Then
+	If Len(ScopusID) > 0 Then
 		strJSON = strJSON & ","
 		strJSON = strJSON & """Scopus"":" & vbCrLf
-		strJSON = strJSON & vbTab & "{""ID"":""" & SScopusID & """," & vbCrLf
-		strJSON = strJSON & vbTab & """URL"":""" & SURL & """," & vbCrLf
-		strJSON = strJSON & vbTab & """Documents"":" & SDocuments & "," & vbCrLf
-		strJSON = strJSON & vbTab & """hIndex"":" & ShIndex & "," & vbCrLf
-		strJSON = strJSON & vbTab & """CoAuthors"":" & SCoAuthors & "," & vbCrLf
-		strJSON = strJSON & vbTab & """References"":" & SReferences & "}" & vbCrLf
+		strJSON = strJSON & vbTab & "{""ID"":""" & ScopusID & """," & vbCrLf
+		strJSON = strJSON & vbTab & """URL"":""" & ScopusURL & """," & vbCrLf
+		strJSON = strJSON & vbTab & """Documents"":" & Scopus_Documents & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hIndex"":" & Scopus_hIndex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """CoAuthors"":" & Scopus_CoAuthors & "," & vbCrLf
+		strJSON = strJSON & vbTab & """CitationDocuments"":" & Scopus_CitationDocuments & "}" & vbCrLf
 	End If
 		
 	If Len(ReID) > 0 Then
@@ -470,6 +582,18 @@ Function JSONAll()
 		strJSON = strJSON & vbTab & """AverageCitations"":" & ResearcherID_averagePerItem & "," & vbCrLf
 		strJSON = strJSON & vbTab & """hIndex"":" & ResearcherID_hindex & "," & vbCrLf
 		strJSON = strJSON & vbTab & """lastUpdatedString"":""" & ResearcherID_lastUpdatedString & """}" & vbCrLf
+	End If
+
+	If Len(MendeleyID) > 0 Then
+		strJSON = strJSON & ","
+		strJSON = strJSON & """Mendeley"":" & vbCrLf
+		strJSON = strJSON & vbTab & "{""ID"":""" & MendeleyID & """," & vbCrLf
+		strJSON = strJSON & vbTab & """URL"":""" & MendeleyURL & """," & vbCrLf
+		strJSON = strJSON & vbTab & """Media"":" & Mendeley_Media & "," & vbCrLf
+		strJSON = strJSON & vbTab & """hIndex"":" & Mendeley_hIndex & "," & vbCrLf
+		strJSON = strJSON & vbTab & """Citations"":" & Mendeley_Citations & "," & vbCrLf
+		strJSON = strJSON & vbTab & """Readers"":" & Mendeley_Readers & "," & vbCrLf
+		strJSON = strJSON & vbTab & """Views"":" & Mendeley_Views & "}" & vbCrLf
 	End If
 	
 	strJSON = strJSON & "}"
