@@ -1,12 +1,22 @@
 <?php
+$ServerRef = $_SERVER['HTTP_REFERER'];
+if (substr($ServerRef,0,28) == "https://kaveh.bakhtiyari.com" || substr($ServerRef,0,27) == "http://kaveh.bakhtiyari.com" || substr($ServerRef,0,28) == "https://wvvw.monataghavi.com" || substr($ServerRef,0,27) == "http://wvvw.monataghavi.com")
+{
+	//Everything is good. Do nothing, and pass.
+}else{
+	header('HTTP/1.0 403 Forbidden');
+	echo ("Your access has been denied.");
+	exit();
+}
+
 	//**************************************************
-	// Edu-Stats v.2.0.0
+	// Edu-Stats v.2.0.1
 	// Academic Statistics Parser
 	// Google Scholar, Scopus, ResearcherID, Mendeley
 	//
 	//
 	// Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
-	// v2.0.0: 13 February 2018
+	// v2.0.1: 12 February 2022
 	//**************************************************
 	error_reporting(E_ERROR | E_PARSE);
 	//error_reporting(E_ALL);
@@ -19,7 +29,7 @@
 	ini_set("user_agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36");
 	ini_set('allow_url_fopen',1);
 
-	$EduStatsVersion = "2.0.0";
+	$EduStatsVersion = "2.0.1";
 
 	function get_web_page( $url, $post = false, $cookiesIn = '', $param = ''){
         $options = array(
@@ -108,7 +118,7 @@
 	
 	if(isset($_GET['google']) && !empty($_GET['google'])){
 		$GScholar = $_GET['google'];
-		$GURL = "http://scholar.google.com/citations?user=" . $GScholar . "&hl=en";
+		$GURL = "https://scholar.google.com/citations?user=" . $GScholar . "&hl=en";
 		google($GURL);
 	}
 	if(isset($_GET['scopus']) && !empty($_GET['scopus'])){
@@ -151,7 +161,12 @@
 		global $GhIndex;
 		global $Gi10Index;
 		
-		$Code = file_get_contents($googleurl);
+		$PageContent = get_web_page($googleurl, false);
+		$Cookies = $PageContent['cookies'];
+		
+		$PageContent = get_web_page($googleurl, false, $Cookies);
+		$Code = $PageContent['content'];
+			
 		$SearchFROM = "<td class=\"gsc_rsb_std\">";
 		$strTO = "</td>";
 		$startPoint = 1;
