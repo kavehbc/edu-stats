@@ -1,14 +1,14 @@
 <html>
 	<head>
-		<title>Edu-Stats - Academic Statistics Parser</title>
+		<title>Edu-Stats - Academic Statistics Parser Demo</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 		<!--
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=7ftCdTQAAAAJ"></script>
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?scopus=54413825200"></script>
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?reid=E-5776-2011"></script>
-		<script src="http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?mendeley=kaveh-bakhtiyari"></script>
+		<script src="https://edu-stats.bakhtiyari.com/query/?google=7ftCdTQAAAAJ"></script>
+		<script src="https://edu-stats.bakhtiyari.com/query/?scopus=54413825200"></script>
+		<script src="https://edu-stats.bakhtiyari.com/query/?reid=E-5776-2011"></script>
+		<script src="https://edu-stats.bakhtiyari.com/query/?mendeley=kaveh-bakhtiyari"></script>
 		-->
 		
 		<script>
@@ -71,7 +71,7 @@
 			reWriteTable(true,"please wait, it's loading...");
 			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
 			
-			strURL = "http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?output=json";
+			strURL = "https://edu-stats.bakhtiyari.com/query/?output=json";
 			if (document.getElementById("fldGoogle").value.length > 0)
 				strURL = strURL + "&google=" + document.getElementById("fldGoogle").value;
 			if (document.getElementById("fldScopus").value.length > 0)
@@ -183,277 +183,49 @@ table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gr
 
 
 		<div id="wrapper">
-			<div id="sidebar">
-				<h1>Edu-Stats</h1>
-				<ul class="menu">
-					<li>
-						<a href="#About">About</a>
-					</li>
-					<li>
-						<a href="#KnownIssues">Known Issues</a>
-					</li>
-					<li>
-						<a href="#VersionHistory">Version History</a>
-					</li>
-					<li>
-						<a href="#SupportedProfiles">Supported Profiles</a>
-					</li>
-					<li>
-						<a href="#Usage">Usage</a>
-					</li>
-					<li>
-						<a href="#Demo">Demo</a>
-					</li>
-					<li>
-						<a href="#SourceCode">Source Code</a>
-					</li>
-				</ul>
-
-			</div>
 			<div id="content">
 
-				<h2>Edu-Stats: Academic Statistics Parser (v.2.0.0)</h2>
-
-				<p id="About">
-Official academic profiles do not provide APIs to show the relevant statistics on the other websites (e.g. the personal websites).<br/>
-					<i>Edu-Stats</i> is a parser to extract the scholar details of academicians such as h-Index, citations, etc.<br />
-These extracted data can be used and presented on the personal websites by an embedded JavaScript.<br />
-This code is developed by <a href="http://www.bakhtiyari.com">Kaveh Bakhtiyari</a>.<br />
-					<br />
-
-					<b>NOTE:</b>
-					<br />
-This code is open-source, and it can be used for non-commercial purposes.<br />
-				</p>
+				<h2>Edu-Stats: Academic Statistics Parser</h2>
 
 				<hr />
-				<h3 id="KnownIssues">Known Issues</h3>
-				<ul>
-					<li>ResearcherID function sometimes fails to load and parse the data.</li>
-				</ul>
+				<h3 id="SourceCode">Github Repo</h3>
+You can find the documentation and source code in Github repository at <a href="https://github.com/kavehbc/Edu-Stats" target="_blank">https://github.com/kavehbc/Edu-Stats</a>.<br />
+<br />
 
 				<hr />
-				<h3 id="VersionHistory">Version History</h3>
+				<h3 id="Demo">Demo</h3>
 
-				<b>v2.0.1: 12 February 2022</b>
-				<br />
-Google Scholar bug fix.<br />
-				<br />
-
-				<b>v2.0.0: 13 February 2018</b>
-				<br />
-Mendeley parser added.<br />
-Scopus function and variables rewritten.<br />
-				<br />
-
-				<b>v1.9.1: 24 April 2017</b>
-				<br />
-JSON output is added.<br />
-				<br />
-
-				<b>v1.9: 20 April 2017</b>
-				<br />
-PHP version is developed.<br />
-ResearchGate parser is removed.<br />
-Google Scholar bug is fixed.<br />
-Scopus bug is fixed.<br />
-				<br />
-
-				<b>v1.8: 8 April 2015</b>
-				<br />
-ResearchGate bug is fixed.<br />
-				<br />
-
-				<b>v1.7: 11 January 2015</b>
-				<br />
-ResearcherID parser is added.<br />
-				<br />
-
-				<b>v1.6: 10 January 2015</b>
-				<br />
-SSL (HTTPS) bug is fixed on Google Scholar.<br />
-				<br />
-
-				<b>v1.5: 6 January 2015</b>
-				<br />
-Prefix attribute is added for multi-extraction.<br />
-				<br />
-
-				<b>v1.0: 2 January 2015</b>
-				<br />
-Initial version<br />
-				<br />
-
-				<hr />
-				<h3 id="SupportedProfiles">Edu-Stats Supported Profiles</h3>
-
-				<ul>
-					<li>
-						<a href="http://scholar.google.com" target="_blank">Google Scholar</a>
-					</li>
-					<ul>
-						<li>h-Index</li>
-						<li>i10-Index</li>
-						<li>Total Citations</li>
-					</ul>
-					<li>
-						<a href="http://www.scopus.com" target="_blank">Scopus</a>
-					</li>
-					<ul>
-						<li>Total Documents</li>
-						<li>h-Index</li>
-						<li>Co-Authors</li>
-						<li>Citation Documents</li>
-					</ul>
-					<li>
-						<a href="http://www.researcherid.com" target="_blank">ResearcherID</a>
-					</li>
-					<ul>
-						<li>Total Article Count</li>
-						<li>Article Count for Metrics</li>
-						<li>Citations</li>
-						<li>Average Citation</li>
-						<li>h-Index</li>
-						<li>Last Updated Date/Time</li>
-					</ul>
-					<li>
-						<a href="http://www.mendeley.com" target="_blank">Mendeley</a>
-					</li>
-					<ul>
-						<li>Media Mentions</li>
-						<li>h-Index</li>
-						<li>Citations</li>
-						<li>Readers</li>
-						<li>Views</li>
-					</ul>
-				</ul>
-
-				<hr />
-				<h3 id="Usage">Usage</h3>
-
-The script generator should be placed in the HEAD section of the HTML code as below:
-				<br />
-				<br />
-				<div class="codeDIV"><pre><code class="html">
-&lt;script src=&quot;http://kaveh.bakhtiyari.com/code/edu-stats/edu-stats.php?google=<b>&lt;GOOGLE_PARAMETER&gt;</b>
-&amp;scopus=<b>&lt;SCOPUS_PARAMETER&gt;</b>
-&amp;reid=<b>&lt;ResearcherID_PARAMETER&gt;</b>
-&amp;mendeley=<b>&lt;MENDELEY_PARAMETER&gt;</b>
-&amp;prefix=<b>&lt;OPTIONAL_PREFIX&gt;</b>
-&amp;output=<b>&lt;javascript|json&gt;</b>
-&quot;&gt;&lt;/script&gt;
-				</code></pre></div>
-				<br />
-				<br />
-
-The above code receives 3 optional query string parameters as below.<br />
-At least one of the parameters should be set.<br />
-				<br />
-
-				<table border="1">
-					<tr>
-						<th>Parameter</th>
-						<th>Description</th>
-						<th>Sample</th>
-					</tr>
-					<tr>
-						<td>google (optional)</td>
-						<td>
-	Google Scholar Profile ID<br />
-	In your profile URL (http://scholar.google.com/citations?user=<b>7ftCdTQAAAAJ</b>&hl=en),
-	"user" value is the Profile ID.
-						</td>
-						<td>
-	google=7ftCdTQAAAAJ
-						</td>
-					</tr>
-
-
-					<tr>
-						<td>scopus (optional)</td>
-						<td>
-	Scopus Author ID<br />
-	In your profile URL (http://www.scopus.com/authid/detail.url?authorId=<b>54413825200</b>),
-	"authorId" value is the Profile ID.
-						</td>
-						<td>
-	scopus=54413825200
-						</td>
-					</tr>
-
-
-					<tr>
-						<td>reid (optional)</td>
-						<td>
-	ResearcherID<br />
-	In your profile URL (http://www.researcherid.com/rid/<b>E-5776-2011</b>),
-	the last part of the URL is the id.
-						</td>
-						<td>
-	reid=E-5776-2011
-						</td>
-					</tr>
-
-					<tr>
-						<td>mendeley (optional)</td>
-						<td>
-	Mendeley<br />
-	In your profile URL (https://www.mendeley.com/profiles/<b>kaveh-bakhtiyari</b>/stats/),
-	the name part of the URL is the id. Make sure that the profile is publicly accessible in the privacy settings.
-						</td>
-						<td>
-	mendeley=kaveh-bakhtiyari
-						</td>
-					</tr>
-
-					
-					<tr>
-						<td>prefix (optional)</td>
-						<td>
-	A prefix to be used for variables to differentiate different scholars.<br />
-							<b>LIMIT:</b>
-							<br />
-	10 alphanumeric characters.
-						</td>
-						<td>
-	prefix=asd123
-						</td>
-					</tr>
-					
-					<tr>
-						<td>output (optional)</td>
-						<td>
-	<b><i>javascript</i></b> (Default)<br />
-	This parameter will generate the output in javascript variables.<br />
-	<b><i>json</i></b><br />
-	This parameter generates JSON output for easier parsing, which is recommended for AJAX functions.<br />
-	JSON does not support prefix parameter.
-						</td>
-						<td>
-	output=json
-						</td>
-					</tr>
-				</table>
-
-				<hr />
-				<h3 id="Demo">Variables &amp; Demo</h3>
-
-				Please fill the following fields to test the demo version. At least one of the following fields should be completed. 
+				Please fill the following fields to test the demo version. At least one of the following fields must be completed. 
 <br /><br />
 
+	<table border="1">
+	<tr><td>
 Google Scholar ID:
+	</td><td>
 <input type="text" name="fldGoogle" id="fldGoogle" value="7ftCdTQAAAAJ" />
-
+	</td></tr>
+	<tr><td>	
 Scopus ID:
+	</td><td>
 <input type="text" name="fldScopus" id="fldScopus" value="54413825200" />
-
+	</td></tr>
+	<tr><td>	
 ResearcherID ID:
+	</td><td>
 <input type="text" name="fldResearcherID" id="fldResearcherID" value="E-5776-2011" />
-
+	</td></tr>
+	<tr><td>	
 Mendeley ID:
+	</td><td>
 <input type="text" name="fldMendeley" id="fldMendeley" value="kaveh-bakhtiyari" />
+	</td></tr>
+	<tr><td>
+	&nbsp;
+	</td><td>
 <input type="button" name="btnSend" id="btnSend" value=" Retrieve Data " onclick="loadDoc();" />
-
+	</td></tr>
+	</table>
+	
 <br /><br />
 In JavaScript output, once the script has been included, each item is stored in a seperate variable as below, and they are accessible via JavaScript.<br />
 				<br />
@@ -640,7 +412,7 @@ n/a
 For instance, in order to print the Google Scholar h-Index on a page, it is only required to write its variable on a page.<br />
 				<br />
 				<div class="codeDIV"><pre><code class="javascript">
-document.write (Google_hIndex);
+document.write(Google_hIndex);
 				</code></pre></div>
 				<br />
 <b>Prefix:</b><br />
@@ -650,18 +422,11 @@ For instance, if the prefix has been set to "123abc", then Google h-Index variab
 				<br />
 				<br />
 				<div class="codeDIV"><pre><code class="javascript">
-document.write (<b>123abc_</b>Google_hIndex);
+document.write(<b>123abc_</b>Google_hIndex);
 				</code></pre></div>
 				
 				<hr />
-				<h3 id="SourceCode">Source Code</h3>
-You can find the source code in Github repository at <a href="https://github.com/kavehbc/Edu-Stats" target="_blank">https://github.com/kavehbc/Edu-Stats</a>.<br />
-<br />
-<b>PHP edition:</b><br />
-In order to use the PHP edition, make sure to enable <i>"php_curl.dll"</i> and <i>"php_openssl.dll"</i> extensions in <i>php.ini</i>.
-				<br /><br />
-				<hr />
-Copyright &copy; 2018. <a href="http://www.bakhtiyari.com">Kaveh Bakhtiyari</a>. All rights reserved.
+Copyright &copy; 2022. <a href="https://bakhtiyari.com">Kaveh Bakhtiyari</a>. All rights reserved.
 				<br />
 				<br />
 
