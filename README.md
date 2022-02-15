@@ -47,14 +47,14 @@ The script generator should be placed in the `HEAD` section of the `HTML` code a
 
 ```html
 <script src="/query/?google=<GOOGLE_ID>
-                          &scopus=<SCOPUS_ID>
-                          &publons=<PUBLONS_ID>
-                          &prefix=<OPTIONAL_PREFIX>
-                          &output=<javascript|json>
+                    &scopus=<SCOPUS_ID>
+                    &publons=<PUBLONS_ID>
+                    &prefix=<OPTIONAL_PREFIX>
+                    &output=<javascript|json>
 "></script>
 ```
 
-The above code receives 3 optional query string parameters as below.
+The above code receives 5 optional query string parameters as below.
 At least one of the parameters should be set.
 
 | **Parameter** | **Type**     | **Description**                                                                                                                                                                                                                           | **Sample**                    |
@@ -70,39 +70,39 @@ If `prefix` is set, its value will be added to the begining of all variable name
 For instance, if the prefix has been set to `123abc`, then Google h-Index variable would be changed as follows:
 
 ``` javascript
-document.write (123abc_Google_hIndex);
+document.write(123abc_Google_hIndex);
 ```
 
 ## Changelog
 #### v2.0.1: 15 February 2022
-Google Scholar bug fix
-Publons added
+Google Scholar bug fix<br />
+Publons added<br />
 ResearcherID and Mendeley removed
 
 #### v2.0.0: 13 February 2018
-Mendeley parser added.
-Scopus function and variables rewritten.
+Mendeley parser added<br />
+Scopus function and variables rewritten
 
 #### v1.9.1: 24 April 2017
-JSON output is added.
+JSON output is added
 
 #### v1.9: 20 April 2017
-PHP version is developed.
-ResearchGate parser is removed.
-Google Scholar bug is fixed.
-Scopus bug is fixed.
+PHP version is developed<br />
+ResearchGate parser is removed<br />
+Google Scholar bug is fixed<br />
+Scopus bug is fixed
 
 #### v1.8: 8 April 2015
-ResearchGate bug is fixed.
+ResearchGate bug is fixed
 
 #### v1.7: 11 January 2015
-ResearcherID parser is added.
+ResearcherID parser is added
 
 #### v1.6: 10 January 2015
-SSL (HTTPS) bug is fixed on Google Scholar.
+SSL (HTTPS) bug is fixed on Google Scholar
 
 #### v1.5: 6 January 2015
-Prefix attribute is added for multi-extraction.
+Prefix attribute is added for multi-extraction
 
 #### v1.0: 2 January 2015
 Initial version
