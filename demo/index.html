@@ -5,10 +5,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 		<!--
-		<script src="https://edu-stats.bakhtiyari.com/query/?google=7ftCdTQAAAAJ"></script>
-		<script src="https://edu-stats.bakhtiyari.com/query/?scopus=54413825200"></script>
-		<script src="https://edu-stats.bakhtiyari.com/query/?reid=E-5776-2011"></script>
-		<script src="https://edu-stats.bakhtiyari.com/query/?mendeley=kaveh-bakhtiyari"></script>
+		<script src="/query/?google=7ftCdTQAAAAJ"></script>
+		<script src="/query/?scopus=54413825200"></script>
 		-->
 		
 		<script>
@@ -61,7 +59,7 @@
 			reWriteTable(true,"please wait, it's loading...");
 			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
 			
-			strURL = "https://edu-stats.bakhtiyari.com/query/?output=json";
+			strURL = "/query/?output=json";
 			if (document.getElementById("fldGoogle").value.length > 0)
 				strURL = strURL + "&google=" + document.getElementById("fldGoogle").value;
 			if (document.getElementById("fldScopus").value.length > 0)
