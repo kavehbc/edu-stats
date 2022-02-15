@@ -38,24 +38,14 @@
 					Scopus_CoAuthors = objJSON.Scopus.CoAuthors;
 					Scopus_CitationDocuments = objJSON.Scopus.CitationDocuments;
 					}
-					if (document.getElementById("fldResearcherID").value.length > 0){
-					ResearcherID_ID = objJSON.ResearcherID.ID;
-					ResearcherID_URL = objJSON.ResearcherID.URL;
-					ResearcherID_Documents = objJSON.ResearcherID.Documents;
-					ResearcherID_articleCountForMetrics = objJSON.ResearcherID.articleCountForMetrics;
-					ResearcherID_Citations = objJSON.ResearcherID.Citations;
-					ResearcherID_AverageCitations = objJSON.ResearcherID.AverageCitations;
-					ResearcherID_hIndex = objJSON.ResearcherID.hIndex;
-					ResearcherID_lastUpdatedString = objJSON.ResearcherID.lastUpdatedString;
-					}
-					if (document.getElementById("fldMendeley").value.length > 0){
-					Mendeley_ID = objJSON.Mendeley.ID;
-					Mendeley_URL = objJSON.Mendeley.URL;
-					Mendeley_Media = objJSON.Mendeley.Media;
-					Mendeley_hIndex = objJSON.Mendeley.hIndex;
-					Mendeley_Citations = objJSON.Mendeley.Citations;
-					Mendeley_Readers = objJSON.Mendeley.Readers;
-					Mendeley_Views = objJSON.Mendeley.Views;
+					if (document.getElementById("fldPublons").value.length > 0){
+					Publons_ID = objJSON.Publons.ID;
+					Publons_URL = objJSON.Publons.URL;
+					publons_averagePerItem = objJSON.Publons.averagePerItem;
+					publons_averagePerYear = objJSON.Publons.averagePerYear;
+					publons_hIndex = objJSON.Publons.hIndex;
+					publons_timesCited = objJSON.Publons.timesCited;
+					publons_numPublicationsInWosCc = objJSON.Publons.numPublicationsInWosCc;
 					}
 					
 					reWriteTable(false);
@@ -76,10 +66,8 @@
 				strURL = strURL + "&google=" + document.getElementById("fldGoogle").value;
 			if (document.getElementById("fldScopus").value.length > 0)
 				strURL = strURL + "&scopus=" + document.getElementById("fldScopus").value;
-			if (document.getElementById("fldResearcherID").value.length > 0)
-				strURL = strURL + "&reid=" + document.getElementById("fldResearcherID").value;
-			if (document.getElementById("fldMendeley").value.length > 0)
-				strURL = strURL + "&mendeley=" + document.getElementById("fldMendeley").value;
+			if (document.getElementById("fldPublons").value.length > 0)
+				strURL = strURL + "&publons=" + document.getElementById("fldPublons").value;
 						
 			xhttp.open("GET", strURL, true);
 			xhttp.send();
@@ -101,24 +89,14 @@
 			document.getElementById("Scopus_CoAuthors").innerHTML = blnError?strErr:Scopus_CoAuthors;
 			document.getElementById("Scopus_CitationDocuments").innerHTML = blnError?strErr:Scopus_CitationDocuments;
 			}
-			if (document.getElementById("fldResearcherID").value.length > 0){
-			document.getElementById("ResearcherID_ID").innerHTML = blnError?strErr:ResearcherID_ID;
-			document.getElementById("ResearcherID_URL").innerHTML = blnError?strErr:ResearcherID_URL;
-			document.getElementById("ResearcherID_Documents").innerHTML = blnError?strErr:ResearcherID_Documents;
-			document.getElementById("ResearcherID_articleCountForMetrics").innerHTML = blnError?strErr:ResearcherID_articleCountForMetrics;
-			document.getElementById("ResearcherID_Citations").innerHTML = blnError?strErr:ResearcherID_Citations;
-			document.getElementById("ResearcherID_AverageCitations").innerHTML = blnError?strErr:ResearcherID_AverageCitations;
-			document.getElementById("ResearcherID_hIndex").innerHTML = blnError?strErr:ResearcherID_hIndex;
-			document.getElementById("ResearcherID_lastUpdatedString").innerHTML = blnError?strErr:ResearcherID_lastUpdatedString;
-			}
-			if (document.getElementById("fldMendeley").value.length > 0){
-			document.getElementById("Mendeley_ID").innerHTML = blnError?strErr:Mendeley_ID;
-			document.getElementById("Mendeley_URL").innerHTML = blnError?strErr:Mendeley_URL;
-			document.getElementById("Mendeley_Media").innerHTML = blnError?strErr:Mendeley_Media;
-			document.getElementById("Mendeley_hIndex").innerHTML = blnError?strErr:Mendeley_hIndex;
-			document.getElementById("Mendeley_Citations").innerHTML = blnError?strErr:Mendeley_Citations;
-			document.getElementById("Mendeley_Readers").innerHTML = blnError?strErr:Mendeley_Readers;
-			document.getElementById("Mendeley_Views").innerHTML = blnError?strErr:Mendeley_Views;
+			if (document.getElementById("fldPublons").value.length > 0){
+			document.getElementById("Publons_ID").innerHTML = blnError?strErr:Publons_ID;
+			document.getElementById("Publons_URL").innerHTML = blnError?strErr:Publons_URL;
+			document.getElementById("publons_averagePerItem").innerHTML = blnError?strErr:publons_averagePerItem;
+			document.getElementById("publons_averagePerYear").innerHTML = blnError?strErr:publons_averagePerYear;
+			document.getElementById("publons_hIndex").innerHTML = blnError?strErr:publons_hIndex;
+			document.getElementById("publons_timesCited").innerHTML = blnError?strErr:publons_timesCited;
+			document.getElementById("publons_numPublicationsInWosCc").innerHTML = blnError?strErr:publons_numPublicationsInWosCc;
 			}
 		}
 		//window.onload = function(){loadDoc();};
@@ -189,7 +167,7 @@ table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gr
 
 				<hr />
 				<h3 id="SourceCode">Github Repo</h3>
-You can find the documentation and source code in Github repository at <a href="https://github.com/kavehbc/Edu-Stats" target="_blank">https://github.com/kavehbc/Edu-Stats</a>.<br />
+You can find the documentation and source code in Github repository at <a href="https://github.com/kavehbc/edu-stats" target="_blank">https://github.com/kavehbc/edu-stats</a>.<br />
 <br />
 
 				<hr />
@@ -210,14 +188,9 @@ Scopus ID:
 <input type="text" name="fldScopus" id="fldScopus" value="54413825200" />
 	</td></tr>
 	<tr><td>	
-ResearcherID ID:
+Publons ID:
 	</td><td>
-<input type="text" name="fldResearcherID" id="fldResearcherID" value="E-5776-2011" />
-	</td></tr>
-	<tr><td>	
-Mendeley ID:
-	</td><td>
-<input type="text" name="fldMendeley" id="fldMendeley" value="kaveh-bakhtiyari" />
+<input type="text" name="fldPublons" id="fldPublons" value="1666350" />
 	</td></tr>
 	<tr><td>
 	&nbsp;
@@ -304,94 +277,44 @@ In JavaScript output, once the script has been included, each item is stored in 
 
 
 					<tr>
-						<td>ResearcherID_ID</td>
-						<td id="ResearcherID_ID">
+						<td>Publons_ID</td>
+						<td id="Publons_ID">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_URL</td>
-						<td id="ResearcherID_URL">
+						<td>Publons_URL</td>
+						<td id="Publons_URL">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_Documents</td>
-						<td id="ResearcherID_Documents">
+						<td>publons_averagePerItem</td>
+						<td id="publons_averagePerItem">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_articleCountForMetrics</td>
-						<td id="ResearcherID_articleCountForMetrics">
+						<td>publons_averagePerYear</td>
+						<td id="publons_averagePerYear">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_Citations</td>
-						<td id="ResearcherID_Citations">
+						<td>publons_hIndex</td>
+						<td id="publons_hIndex">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_AverageCitations</td>
-						<td id="ResearcherID_AverageCitations">
+						<td>publons_timesCited</td>
+						<td id="publons_timesCited">
 							n/a
 						</td>
 					</tr>
 					<tr>
-						<td>ResearcherID_hIndex</td>
-						<td id="ResearcherID_hIndex">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>ResearcherID_lastUpdatedString</td>
-						<td id="ResearcherID_lastUpdatedString">
-							n/a
-						</td>
-					</tr>
-
-					
-					<tr>
-						<td>Mendeley_ID</td>
-						<td id="Mendeley_ID">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_URL</td>
-						<td id="Mendeley_URL">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_Media</td>
-						<td id="Mendeley_Media">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_hIndex</td>
-						<td id="Mendeley_hIndex">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_Citations</td>
-						<td id="Mendeley_Citations">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_Readers</td>
-						<td id="Mendeley_Readers">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Mendeley_Views</td>
-						<td id="Mendeley_Views">
+						<td>publons_numPublicationsInWosCc</td>
+						<td id="publons_numPublicationsInWosCc">
 							n/a
 						</td>
 					</tr>

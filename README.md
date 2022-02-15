@@ -22,7 +22,7 @@ The end-users should monitor their requests to the servers in order to prevent a
 Access to the hosted JavaScript on this website is restricted to prevent generation of high traffic on the target websites.
 
 ## Known Issues
-ResearcherID function sometimes fails to load and parse the data.
+Scopus function does not work.
 
 
 ## Edu-Stats Supported Profiles
@@ -35,28 +35,20 @@ ResearcherID function sometimes fails to load and parse the data.
   * h-Index
   * Co-Authors
   * Citation Documents
-* ResearcherID
-  * Total Article Count
-  * Article Count for Metrics
-  * Citations
-  * Average Citation
+* Publons
+  * Average Per Item
+  * Average Per Year
   * h-Index
-  * Last Updated Date/Time
-* Mendeley
-  * Media Mentions
-  * h-Index
-  * Citations
-  * Readers
-  * Views
+  * Times Cited
+  * Number of Publications in WosCc
 
 ## Usage
 The script generator should be placed in the `HEAD` section of the `HTML` code as below:
 
 ```html
-<script src="edu-stats.php?google=<GOOGLE_PARAMETER>
-                          &scopus=<SCOPUS_PARAMETER>
-                          &reid=<ResearcherID_PARAMETER>
-                          &mendeley=<MENDELEY_PARAMETER>
+<script src="edu-stats.php?google=<GOOGLE_ID>
+                          &scopus=<SCOPUS_ID>
+                          &publons=<PUBLONS_ID>
                           &prefix=<OPTIONAL_PREFIX>
                           &output=<javascript|json>
 "></script>
@@ -69,8 +61,7 @@ At least one of the parameters should be set.
 |-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
 | google    | optional | Google Scholar ID<br />In your profile URL (http://scholar.google.com/citations?user=7ftCdTQAAAAJ&hl=en), `user` value is the Profile ID.                                                                                          | google=7ftCdTQAAAAJ       |
 | scopus    | optional | Scopus Author ID<br />In your profile URL (http://www.scopus.com/authid/detail.url?authorId=54413825200), `authorId` value is the Profile ID.                                                                                              | scopus=54413825200        |
-| reid      | optional | ResearcherID<br />In your profile URL (http://www.researcherid.com/rid/E-5776-2011), the last part of the URL is the id.                                                                                                                   | reid=E-5776-2011          |
-| mendeley  | optional | Mendeley<br />In your profile URL (https://www.mendeley.com/profiles/kaveh-bakhtiyari/stats/), the name part of the URL is the id. Make sure that the profile is publicly accessible in the privacy settings.                              | mendeley=kaveh-bakhtiyari |
+| publons      | optional | publons<br />In your profile URL (https://publons.com/researcher/1666350), the last part of the URL is the id.                                                                                                                   | publons=1666350          |
 | prefix    | optional | A prefix to be used for variables to differentiate different scholars.<br />**LIMIT:** 10 alphanumeric characters.                                                                                                                             | prefix=asd123             |
 | output    | optional | **javascript** (*Default*):<br />This parameter will generate the output in javascript variables.<br /><br />**json**:<br />This parameter generates JSON output for easier parsing, which is recommended for AJAX functions. JSON does not support prefix parameters. | output=json               |
 
@@ -83,8 +74,10 @@ document.write (123abc_Google_hIndex);
 ```
 
 ## Changelog
-#### v2.0.1: 12 February 2022
+#### v2.0.1: 15 February 2022
 Google Scholar bug fix
+Publons added
+ResearcherID and Mendeley removed
 
 #### v2.0.0: 13 February 2018
 Mendeley parser added.
