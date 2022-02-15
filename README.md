@@ -46,7 +46,7 @@ Scopus function does not work.
 The script generator should be placed in the `HEAD` section of the `HTML` code as below:
 
 ```html
-<script src="edu-stats.php?google=<GOOGLE_ID>
+<script src="/query/?google=<GOOGLE_ID>
                           &scopus=<SCOPUS_ID>
                           &publons=<PUBLONS_ID>
                           &prefix=<OPTIONAL_PREFIX>
