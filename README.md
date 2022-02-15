@@ -9,11 +9,11 @@ This API can be consumed as an embedded JavaScript, or retrieve the details in J
 For live demo, you can check https://edu-stats.kaveh.me/demo/
 
 ## Supported Profiles
-Google Scholar, Scopus, ResearcherID and Mendeley
+Google Scholar, Scopus, Publons
 
-> :warning: ResearchGate function has been removed.
+> :warning: ResearchGate, ResearcherID and Mendeley parsers have been removed.
 
-## PHP Edition
+## PHP cURL
 In order to use the PHP edition, make sure to enable `php_curl.dll` and `php_openssl.dll` extensions in `php.ini`. 
 
 ## Legal Disclaimer
@@ -22,7 +22,7 @@ The end-users should monitor their requests to the servers in order to prevent a
 Access to the hosted JavaScript on this website is restricted to prevent generation of high traffic on the target websites.
 
 ## Known Issues
-Scopus function does not work.
+Scopus parser currently does not work.
 
 
 ## Edu-Stats Supported Profiles
@@ -61,7 +61,7 @@ At least one of the parameters should be set.
 |-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
 | google    | optional | Google Scholar ID<br />In your profile URL (http://scholar.google.com/citations?user=7ftCdTQAAAAJ&hl=en), `user` value is the Profile ID.                                                                                          | google=7ftCdTQAAAAJ       |
 | scopus    | optional | Scopus Author ID<br />In your profile URL (http://www.scopus.com/authid/detail.url?authorId=54413825200), `authorId` value is the Profile ID.                                                                                              | scopus=54413825200        |
-| publons      | optional | publons<br />In your profile URL (https://publons.com/researcher/1666350), the last part of the URL is the id.                                                                                                                   | publons=1666350          |
+| publons   | optional | Publons<br />In your profile URL (https://publons.com/researcher/1666350), the last part of the URL is the id.                                                                                                                   | publons=1666350          |
 | prefix    | optional | A prefix to be used for variables to differentiate different scholars.<br />**LIMIT:** 10 alphanumeric characters.                                                                                                                             | prefix=asd123             |
 | output    | optional | **javascript** (*Default*):<br />This parameter will generate the output in javascript variables.<br /><br />**json**:<br />This parameter generates JSON output for easier parsing, which is recommended for AJAX functions. JSON does not support prefix parameters. | output=json               |
 
@@ -75,9 +75,9 @@ document.write(123abc_Google_hIndex);
 
 ## Changelog
 #### v2.0.1: 15 February 2022
-Google Scholar bug fix<br />
-Publons added<br />
-ResearcherID and Mendeley removed
+Google Scholar bug is fix<br />
+Publons parser is added<br />
+ResearcherID and Mendeley parsers are removed
 
 #### v2.0.0: 13 February 2018
 Mendeley parser added<br />
