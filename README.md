@@ -66,10 +66,10 @@ At least one of the parameters should be set.
 
 ### Prefix
 If `prefix` is set, its value will be added to the begining of all variable names. This can be set to prevent variable similarities (duplicated names) in JavaScript output, specially, when there are multiple profile calls.
-For instance, if the prefix has been set to `123abc`, then Google h-Index variable would be changed as follows:
+For instance, if the prefix has been set to `abc123`, then Google h-Index variable would be changed as follows:
 
 ``` javascript
-document.write(123abc_Google_hIndex);
+document.write(abc123_Google_hIndex);
 ```
 
 ## Changelog
