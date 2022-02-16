@@ -3,8 +3,6 @@ Official academic tracking platforms do not provide APIs to retrieve the relevan
 Edu-Stats is a parser to extract the scholar statistics and can be used/presented on other websites (e.g. the personal/academic websites).
 This API can be consumed as an embedded JavaScript, or retrieve the details in JSON format.
 
-> **NOTE:** This code is open-source, and it can be used for non-commercial purposes.
-
 ## Live Demo
 For live demo, you can check https://edu-stats.kaveh.me/demo/
 
