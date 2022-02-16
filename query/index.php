@@ -108,35 +108,36 @@ $Scopus_CitationDocuments = -1;
 
 //Publons Variables
 $PublonsURL = '';
-$publons_averagePerItem;
-$publons_averagePerYear;
-$publons_hIndex;
-$publons_timesCited;
-$publons_numPublicationsInWosCc;
-	
+$publons_averagePerItem = -1;
+$publons_averagePerYear = -1;
+$publons_hIndex = -1;
+$publons_timesCited = -1;
+$publons_numPublicationsInWosCc = -1;
+
 $gscholar_id = "";
-$scopus_id = "";
-$publons_id = "";
-
-$prefix = "";
-$output = "javascript";
-
-
 if(isset($_GET['google']) && !empty($_GET['google'])){
 	$gscholar_id = $_GET['google'];
 	google($gscholar_id);
 }
+
+$scopus_id = "";
 if(isset($_GET['scopus']) && !empty($_GET['scopus'])){
 	$scopus_id = $_GET['scopus'];
 	scopus($scopus_id);
 }
+
+$publons_id = "";
 if(isset($_GET['publons']) && !empty($_GET['publons'])){
 	$publons_id = $_GET['publons'];
 	publons($publons_id);
 }
+
+$prefix = "";
 if(isset($_GET['prefix']) && !empty($_GET['prefix'])){
 	$prefix = $_GET['prefix'];
 }
+
+$output = "javascript";
 if(isset($_GET['output']) && !empty($_GET['output'])){
 	$output = $_GET['output'];
 }
