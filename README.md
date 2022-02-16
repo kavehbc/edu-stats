@@ -24,7 +24,7 @@ Access to the hosted JavaScript on this website is restricted to prevent generat
 ## Known Issues
 N/A
 
-## Edu-Stats Supported Profiles
+## Supported Profiles
 * Google Scholar
   * h-Index
   * i10-Index
