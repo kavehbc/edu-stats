@@ -22,8 +22,7 @@ The end-users should monitor their requests to the servers in order to prevent a
 Access to the hosted JavaScript on this website is restricted to prevent generation of high traffic on the target websites.
 
 ## Known Issues
-Scopus parser currently does not work.
-
+N/A
 
 ## Edu-Stats Supported Profiles
 * Google Scholar
@@ -33,7 +32,7 @@ Scopus parser currently does not work.
 * Scopus
   * Total Documents
   * h-Index
-  * Co-Authors
+  * Citations
   * Citation Documents
 * Publons
   * Average Per Item
@@ -76,6 +75,7 @@ document.write(123abc_Google_hIndex);
 ## Changelog
 #### v2.0.1: 15 February 2022
 Google Scholar bug is fix<br />
+Scopus bug is fix<br />
 Publons parser is added<br />
 ResearcherID and Mendeley parsers are removed
 
