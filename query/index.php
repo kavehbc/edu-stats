@@ -2,10 +2,10 @@
 //**************************************************
 // Edu-Stats v.2.0.1
 // Academic Statistics Parser
-// Google Scholar, Scopus, ResearcherID, Mendeley
+// Google Scholar, Scopus, Publons
 //
 //
-// Developed by Kaveh Bakhtiyari ( http://www.bakhtiyari.com )
+// Developed by Kaveh Bakhtiyari (https://bakhtiyari.com)
 // v2.0.1: 12 February 2022
 //**************************************************
 
@@ -44,7 +44,7 @@ if (!$validated)
 
 $EduStatsVersion = "2.0.1";
 
-function get_web_page( $url, $post = false, $cookiesIn = '', $param = ''){
+function get_web_page($url, $post = false, $cookiesIn = '', $param = ''){
 	$options = array(
 	CURLOPT_POST           => $post,
 	CURLOPT_RETURNTRANSFER => true,     // return web page
@@ -57,26 +57,30 @@ function get_web_page( $url, $post = false, $cookiesIn = '', $param = ''){
 	CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
 	CURLINFO_HEADER_OUT    => true,
 	CURLOPT_SSL_VERIFYPEER => false,     // Disabled SSL Cert checks
-	CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+	CURLOPT_SSL_VERIFYHOST => false,
+	CURLOPT_VERBOSE        => true,
+	CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2_0,
 	CURLOPT_USERAGENT      => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36",
-	CURLOPT_COOKIE         => $cookiesIn
+	CURLOPT_COOKIE         => $cookiesIn,
+	CURLOPT_COOKIEJAR      => dirname(__FILE__) . '/cookie.txt',
+	CURLOPT_COOKIEFILE     => dirname(__FILE__) . '/cookie.txt'
 	);
 	
 	if (strlen($param) > 0){
 		$options[CURLOPT_POSTFIELDS] = $param; //Set POST parameters
 	}
 	
-	$ch      = curl_init( $url );
-	curl_setopt_array( $ch, $options );
-	$rough_content = curl_exec( $ch );
-	$err     = curl_errno( $ch );
-	$errmsg  = curl_error( $ch );
-	$header  = curl_getinfo( $ch );
-	curl_close( $ch );
+	$ch      = curl_init($url);
+	curl_setopt_array($ch, $options);
+	$rough_content = curl_exec($ch);
+	$err     = curl_errno($ch);
+	$errmsg  = curl_error($ch);
+	$header  = curl_getinfo($ch);
+	curl_close($ch);
 	
 	$header_content = substr($rough_content, 0, $header['header_size']);
 	$body_content = trim(str_replace($header_content, '', $rough_content));
-	$pattern = "#Set-Cookie:\\s+(?<cookie>[^=]+=[^;]+)#m"; 
+	$pattern = "#set-cookie:\\s+(?<cookie>[^=]+=[^;]+)#m"; 
 	preg_match_all($pattern, $header_content, $matches); 
 	$cookiesOut = implode("; ", $matches['cookie']);
 	
@@ -85,6 +89,7 @@ function get_web_page( $url, $post = false, $cookiesIn = '', $param = ''){
 	$header['headers']  = $header_content;
 	$header['content'] = $body_content;
 	$header['cookies'] = $cookiesOut;
+	$header['rough'] = $rough_content;
 	return $header;
 }
 	
@@ -97,6 +102,7 @@ $Gi10Index = -1;
 //Scopus Variables
 $ScopusURL = '';
 $Scopus_hIndex = -1;
+$Scopus_Citations = -1;
 $Scopus_Documents = -1;
 $Scopus_CitationDocuments = -1;
 
@@ -191,28 +197,29 @@ function google($GScholar){
 
 function scopus($ScopusID){
 	
-	//This function does not work
 	global $ScopusURL;
 	global $Scopus_hIndex;
 	global $Scopus_Documents;
+	global $Scopus_Citations;
 	global $Scopus_CitationDocuments;
 
 	$ScopusURL = "https://www.scopus.com/authid/detail.uri?authorId=" . $ScopusID;
+	$ScopusEntryURL = "https://scopus.com/";
 	$scopus_api_url = "https://www.scopus.com/api/authors/" . $ScopusID . "/metrics";
-	
-	$header[0] = "Accept: application/json";
 
-	$page_content = get_web_page($ScopusURL);
+	$page_content = get_web_page($ScopusEntryURL);
 	$cookies = $page_content['cookies'];
-
-	$page_content = get_web_page($scopus_api_url, False, $cookies, '', '', $header);
+		
+	$page_content = get_web_page($scopus_api_url, False, $cookies);
 	$content = $page_content['content'];
-			
-	echo("URL:" . $scopus_url . "<br />");
-	echo("Content:" . $Code);
-
-
+	
+	$scopus = new SimpleXMLElement($content);
+	$Scopus_hIndex = $scopus->h_index;
+    $Scopus_Documents = $scopus->documents;
+	$Scopus_Citations = $scopus->citations->citation_count;
+	$Scopus_CitationDocuments = $scopus->citations->by_documents_count;
 }
+
 
 function publons($publonsID){
 	
@@ -266,6 +273,7 @@ function ScriptAll(){
 	global $ScopusURL;
 	global $Scopus_hIndex;
 	global $Scopus_Documents;
+	global $Scopus_Citations;
 	global $Scopus_CitationDocuments;
 	
 	global $PublonsURL;
@@ -292,6 +300,7 @@ function ScriptAll(){
 		echo(PrefixCheck() . "Scopus_ID = \"" . $scopus_id . "\";");
 		echo(PrefixCheck() . "Scopus_URL = \"" . $ScopusURL . "\";");
 		echo(PrefixCheck() . "Scopus_hIndex = " . $Scopus_hIndex . ";");
+		echo(PrefixCheck() . "Scopus_Citations = " . $Scopus_Citations . ";");		
 		echo(PrefixCheck() . "Scopus_Documents = " . $Scopus_Documents . ";");
 		echo(PrefixCheck() . "Scopus_CitationDocuments = " . $Scopus_CitationDocuments . ";");
 	}
@@ -327,6 +336,7 @@ function JSONAll(){
 	global $ScopusURL;
 	global $Scopus_hIndex;
 	global $Scopus_Documents;
+	global $Scopus_Citations;
 	global $Scopus_CitationDocuments;
 	
 	global $PublonsURL;
@@ -357,6 +367,7 @@ function JSONAll(){
 		$strJSON .= "\t\"URL\":\"" . $ScopusURL . "\",\r\n";
 		$strJSON .= "\t\"Documents\":" . $Scopus_Documents . ",\r\n";
 		$strJSON .= "\t\"hIndex\":" . $Scopus_hIndex . ",\r\n";
+		$strJSON .= "\t\"Citations\":" . $Scopus_Citations . ",\r\n";
 		$strJSON .= "\t\"CitationDocuments\":" . $Scopus_CitationDocuments . "}\r\n";
 	}
 	
