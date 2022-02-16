@@ -33,7 +33,7 @@
 					Scopus_URL = objJSON.Scopus.URL;
 					Scopus_Documents = objJSON.Scopus.Documents;
 					Scopus_hIndex = objJSON.Scopus.hIndex;
-					Scopus_CoAuthors = objJSON.Scopus.CoAuthors;
+					Scopus_Citations = objJSON.Scopus.Citations;
 					Scopus_CitationDocuments = objJSON.Scopus.CitationDocuments;
 					}
 					if (document.getElementById("fldPublons").value.length > 0){
@@ -84,7 +84,7 @@
 			document.getElementById("Scopus_URL").innerHTML = blnError?strErr:Scopus_URL;
 			document.getElementById("Scopus_Documents").innerHTML = blnError?strErr:Scopus_Documents;
 			document.getElementById("Scopus_hIndex").innerHTML = blnError?strErr:Scopus_hIndex;
-			document.getElementById("Scopus_CoAuthors").innerHTML = blnError?strErr:Scopus_CoAuthors;
+			document.getElementById("Scopus_Citations").innerHTML = blnError?strErr:Scopus_Citations;
 			document.getElementById("Scopus_CitationDocuments").innerHTML = blnError?strErr:Scopus_CitationDocuments;
 			}
 			if (document.getElementById("fldPublons").value.length > 0){
@@ -261,8 +261,8 @@ In JavaScript output, once the script has been included, each item is stored in 
 						</td>
 					</tr>
 					<tr>
-						<td>Scopus_CoAuthors</td>
-						<td id="Scopus_CoAuthors">
+						<td>Scopus_Citations</td>
+						<td id="Scopus_Citations">
 							n/a
 						</td>
 					</tr>
