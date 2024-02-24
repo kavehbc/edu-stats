@@ -1,0 +1,18 @@
+[project]
+name = "edu-stats"
+version = "0.1.0"
+authors = [
+    { name = "Kaveh Bakhtiyari", email = "kbakhtiyari@yahoo.com" },
+]
+description = "Edu-Stats"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/kavehbc/edu-stats"
+"Bug Tracker" = "https://github.com/kavehbc/edu-stats"
