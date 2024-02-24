@@ -30,7 +30,7 @@ pip install -e . --upgrade --upgrade-strategy only-if-needed
 
 ## Methods
 
-- `edustats.google_scholar(user: str)` -> `dict`
+- `edustats.google_scholar(user: str) -> dict`
 <br />
 It returns the academic metrics from Google Scholar.
   
