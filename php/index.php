@@ -31,7 +31,14 @@ $cors_allowed_origins = array(
 	"https://wvvw.monataghavi.com"
 );
 
+// Buffer output so the debug echo below doesn't block the header() calls that follow
+ob_start();
+
 $request_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+
+// DEBUG: print the request origin regardless of whether it matches the allow-list
+// echo "Request Origin: " . htmlspecialchars($request_origin, ENT_QUOTES, 'UTF-8') . "\n";
+
 if (in_array($request_origin, $cors_allowed_origins, true)) {
     header("Access-Control-Allow-Origin: " . $request_origin);
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
@@ -43,16 +50,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
     exit();
 }
 
-$validated = False;
-if (isset($_SERVER['HTTP_REFERER'])){
-	$server_ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-	$parse = parse_url($server_ref);
-	$host = $parse['host'];
-	
-	foreach ($whitelist_urls as $value){
-		if ($host == $value){
-			$validated = True;
-		}
+// Access check: allow if the Origin header or the Referer's scheme+host matches $cors_allowed_origins
+$validated = in_array($request_origin, $cors_allowed_origins, true);
+
+if (!$validated && isset($_SERVER['HTTP_REFERER'])){
+	$parse = parse_url($_SERVER['HTTP_REFERER']);
+	if (isset($parse['scheme'], $parse['host'])){
+		$referer_origin = strtolower($parse['scheme'] . "://" . $parse['host']);
+		$validated = in_array($referer_origin, $cors_allowed_origins, true);
 	}
 }
 
