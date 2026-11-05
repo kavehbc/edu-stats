@@ -1,351 +1,448 @@
-<html>
-	<head>
-		<title>Edu-Stats - Academic Statistics Parser Demo</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Edu-Stats Demo</title>
+	<meta name="description" content="Edu-Stats: Academic Statistics Parser for Google Scholar, Scopus and Publons." />
 
-		<!--
-		<script src="/query/?google=7ftCdTQAAAAJ"></script>
-		<script src="/query/?scopus=54413825200"></script>
-		<script src="/query/?publons=1666350"></script>
-		-->
-		
-		<script>
-		function GetEduVar(varName){document.write (window[varName]);}
-		//GetEduVar("Google_ID");
-		
-		function loadDoc() {
+	<!--
+	<script src="/query/?google=7ftCdTQAAAAJ"></script>
+	<script src="/query/?scopus=54413825200"></script>
+	<script src="/query/?publons=1666350"></script>
+	-->
+
+	<style>
+		:root {
+			--bg: #f6f7f9;
+			--surface: #ffffff;
+			--surface-2: #f1f3f6;
+			--border: #e3e6eb;
+			--text: #1a1d23;
+			--muted: #6b7280;
+			--accent: #2563eb;
+			--accent-hover: #1d4ed8;
+			--accent-soft: #eff4ff;
+			--danger: #b42318;
+			--danger-soft: #fef3f2;
+			--code-bg: #0f172a;
+			--code-text: #e2e8f0;
+			--radius: 12px;
+			--shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+			--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+		}
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg: #0d1117;
+				--surface: #161b22;
+				--surface-2: #1c2230;
+				--border: #2a313c;
+				--text: #e6e8eb;
+				--muted: #9198a1;
+				--accent: #4c8dff;
+				--accent-hover: #6aa1ff;
+				--accent-soft: #15233d;
+				--danger: #ff8a80;
+				--danger-soft: #2d1517;
+				--code-bg: #0a0d12;
+				--code-text: #d6dde6;
+				--shadow: none;
+			}
+		}
+
+		* { box-sizing: border-box; }
+		html { -webkit-text-size-adjust: 100%; }
+		body {
+			margin: 0;
+			background: var(--bg);
+			color: var(--text);
+			font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			-webkit-font-smoothing: antialiased;
+		}
+		a { color: var(--accent); text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		code, pre { font-family: var(--mono); }
+
+		.container { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+
+		/* Header */
+		header { padding: 56px 0 32px; }
+		.eyebrow {
+			display: inline-block;
+			font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+			color: var(--accent); background: var(--accent-soft);
+			padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+		}
+		h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 10px; }
+		.lead { color: var(--muted); font-size: 17px; margin: 0 0 22px; max-width: 620px; }
+		.btn-ghost {
+			display: inline-flex; align-items: center; gap: 8px;
+			padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
+			background: var(--surface); color: var(--text); font-size: 14px; font-weight: 500;
+		}
+		.btn-ghost:hover { text-decoration: none; border-color: var(--muted); }
+		.btn-ghost svg { width: 16px; height: 16px; fill: currentColor; }
+
+		/* Sections */
+		section { margin-bottom: 28px; }
+		.card {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			box-shadow: var(--shadow);
+			padding: 24px;
+		}
+		h2 { font-size: 18px; letter-spacing: -.01em; margin: 0 0 4px; }
+		.hint { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+
+		/* Form */
+		.fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+		@media (max-width: 720px) { .fields { grid-template-columns: 1fr; } }
+		label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+		input[type="text"] {
+			width: 100%; padding: 10px 12px;
+			font: 14px var(--mono);
+			color: var(--text); background: var(--surface);
+			border: 1px solid var(--border); border-radius: 8px;
+			transition: border-color .15s, box-shadow .15s;
+		}
+		input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+		.actions { display: flex; align-items: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+		.btn-primary {
+			display: inline-flex; align-items: center; gap: 8px;
+			padding: 10px 18px; border: 0; border-radius: 8px;
+			background: var(--accent); color: #fff;
+			font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+			transition: background .15s;
+		}
+		.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+		.btn-primary:disabled { opacity: .65; cursor: progress; }
+		.spinner {
+			width: 14px; height: 14px; border-radius: 50%;
+			border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff;
+			animation: spin .7s linear infinite; display: none;
+		}
+		.btn-primary:disabled .spinner { display: inline-block; }
+		@keyframes spin { to { transform: rotate(360deg); } }
+		.status { font-size: 14px; color: var(--muted); }
+
+		.alert {
+			display: none; margin-top: 16px; padding: 10px 14px; border-radius: 8px;
+			background: var(--danger-soft); color: var(--danger); font-size: 14px;
+		}
+		.alert.show { display: block; }
+
+		/* Results */
+		.results { display: grid; gap: 16px; }
+		.result-card { padding: 0; overflow: hidden; }
+		.result-head {
+			display: flex; justify-content: space-between; align-items: center;
+			padding: 14px 20px; border-bottom: 1px solid var(--border);
+		}
+		.result-head h3 { font-size: 15px; margin: 0; }
+		.badge {
+			font-size: 12px; font-weight: 500; color: var(--muted);
+			background: var(--surface-2); padding: 2px 8px; border-radius: 999px;
+		}
+		.badge.ok { color: #067647; background: #ecfdf3; }
+		@media (prefers-color-scheme: dark) { .badge.ok { color: #75e0a7; background: #0f2a1d; } }
+		table { width: 100%; border-collapse: collapse; font-size: 14px; }
+		td { padding: 10px 20px; border-top: 1px solid var(--border); vertical-align: top; }
+		tr:first-child td { border-top: 0; }
+		td.var { width: 42%; font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
+		td.val { font-variant-numeric: tabular-nums; word-break: break-all; }
+		td.val.empty { color: var(--muted); }
+		td.val.loading::after {
+			content: ""; display: inline-block; width: 64px; height: 10px; border-radius: 4px;
+			background: linear-gradient(90deg, var(--surface-2), var(--border), var(--surface-2));
+			background-size: 200% 100%; animation: shimmer 1.2s infinite;
+		}
+		@keyframes shimmer { to { background-position: -200% 0; } }
+		@media (max-width: 560px) {
+			td { display: block; padding: 4px 16px; border-top: 0; }
+			td.var { width: auto; padding-top: 12px; }
+			tr + tr td.var { border-top: 1px solid var(--border); }
+			td.val { padding-bottom: 12px; }
+		}
+
+		/* Code */
+		.code {
+			position: relative;
+			background: var(--code-bg); color: var(--code-text);
+			border-radius: 10px; margin: 0;
+		}
+		.code pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-size: 13px; line-height: 1.55; max-height: 420px; }
+		.copy {
+			position: absolute; top: 8px; right: 8px;
+			font-family: inherit; font-size: 12px; font-weight: 500;
+			color: var(--code-text); background: rgba(255, 255, 255, .08);
+			border: 1px solid rgba(255, 255, 255, .12); border-radius: 6px;
+			padding: 4px 10px; cursor: pointer;
+		}
+		.copy:hover { background: rgba(255, 255, 255, .16); }
+		p { margin: 0 0 14px; }
+		p code, li code { font-size: 13px; background: var(--surface-2); padding: 1px 6px; border-radius: 4px; }
+
+		footer {
+			border-top: 1px solid var(--border);
+			padding: 24px 0 48px; margin-top: 12px;
+			color: var(--muted); font-size: 13px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+
+		<header>
+			<span class="eyebrow">Academic Statistics Parser</span>
+			<h1>Edu-Stats</h1>
+			<p class="lead">Fetch citation counts, h-index and i10-index from Google Scholar, Scopus and Publons, and use them on any website as JavaScript variables or JSON.</p>
+			<a class="btn-ghost" href="https://github.com/kavehbc/edu-stats" target="_blank" rel="noopener">
+				<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+				Documentation &amp; source on GitHub
+			</a>
+		</header>
+
+		<!-- Demo form -->
+		<section id="Demo" class="card">
+			<h2>Try it</h2>
+			<p class="hint">Enter at least one profile ID, then retrieve the data.</p>
+
+			<form id="demoForm" novalidate>
+				<div class="fields">
+					<div>
+						<label for="fldGoogle">Google Scholar ID</label>
+						<input type="text" name="fldGoogle" id="fldGoogle" value="7ftCdTQAAAAJ" autocomplete="off" spellcheck="false" />
+					</div>
+					<div>
+						<label for="fldScopus">Scopus ID</label>
+						<input type="text" name="fldScopus" id="fldScopus" value="54413825200" autocomplete="off" spellcheck="false" />
+					</div>
+					<div>
+						<label for="fldPublons">Publons ID</label>
+						<input type="text" name="fldPublons" id="fldPublons" value="1666350" autocomplete="off" spellcheck="false" />
+					</div>
+				</div>
+				<div class="actions">
+					<button type="submit" class="btn-primary" id="btnSend">
+						<span class="spinner" aria-hidden="true"></span>
+						<span>Retrieve data</span>
+					</button>
+					<span class="status" id="status" role="status" aria-live="polite"></span>
+				</div>
+				<div class="alert" id="alert" role="alert"></div>
+			</form>
+		</section>
+
+		<!-- Variables -->
+		<section>
+			<h2>JavaScript variables</h2>
+			<p class="hint">With the JavaScript output, once the script is included each item is stored in its own global variable, accessible from your page.</p>
+			<div class="results" id="results"></div>
+		</section>
+
+		<!-- JSON -->
+		<section>
+			<h2>JSON output</h2>
+			<p class="hint">Setting <code>output=json</code> returns JSON, suitable for parsing and AJAX calls. The response for the request above:</p>
+			<div class="code">
+				<button class="copy" type="button" data-copy="jsonoutput">Copy</button>
+				<pre><code id="jsonoutput" class="json">n/a</code></pre>
+			</div>
+		</section>
+
+		<!-- Usage -->
+		<section>
+			<h2>Usage</h2>
+			<p class="hint">For instance, to print the Google Scholar h-index on a page, include the script and write its variable:</p>
+			<div class="code">
+				<button class="copy" type="button" data-copy="usagecode">Copy</button>
+				<pre><code id="usagecode" class="javascript">&lt;script src="/query/?google=7ftCdTQAAAAJ"&gt;&lt;/script&gt;
+&lt;script&gt;document.write(Google_hIndex);&lt;/script&gt;</code></pre>
+			</div>
+		</section>
+
+		<footer>
+			Copyright &copy; 2026 <a href="https://bakhtiyari.com">Kaveh Bakhtiyari</a>. All rights reserved.
+		</footer>
+
+	</div>
+
+	<script>
+		function GetEduVar(varName){ document.write(window[varName]); }
+
+		// Source definitions: [global variable / element id, JSON key]
+		var SOURCES = [
+			{ key: "Google", title: "Google Scholar", field: "fldGoogle", vars: [
+				["Google_ID", "ID"], ["Google_URL", "URL"], ["Google_Citations", "Citations"],
+				["Google_hIndex", "hIndex"], ["Google_i10Index", "i10Index"]
+			]},
+			{ key: "Scopus", title: "Scopus", field: "fldScopus", vars: [
+				["Scopus_ID", "ID"], ["Scopus_URL", "URL"], ["Scopus_Documents", "Documents"],
+				["Scopus_hIndex", "hIndex"], ["Scopus_Citations", "Citations"],
+				["Scopus_CitationDocuments", "CitationDocuments"]
+			]},
+			{ key: "Publons", title: "Publons", field: "fldPublons", vars: [
+				["Publons_ID", "ID"], ["Publons_URL", "URL"], ["publons_averagePerItem", "averagePerItem"],
+				["publons_averagePerYear", "averagePerYear"], ["publons_hIndex", "hIndex"],
+				["publons_timesCited", "timesCited"], ["publons_numPublicationsInWosCc", "numPublicationsInWosCc"]
+			]}
+		];
+
+		var $ = function(id){ return document.getElementById(id); };
+
+		// Build the result cards
+		(function buildResults(){
+			var html = "";
+			SOURCES.forEach(function(s){
+				html += '<div class="card result-card"><div class="result-head"><h3>' + s.title +
+					'</h3><span class="badge" id="badge_' + s.key + '">Not requested</span></div><table>';
+				s.vars.forEach(function(v){
+					html += '<tr><td class="var">' + v[0] + '</td><td class="val empty" id="' + v[0] + '">n/a</td></tr>';
+				});
+				html += '</table></div>';
+			});
+			$("results").innerHTML = html;
+		})();
+
+		function fieldValue(id){ return $(id).value.trim(); }
+
+		function setCell(id, value, state){
+			var el = $(id);
+			el.className = "val" + (state ? " " + state : "");
+			el.textContent = "";
+			if (state === "loading") return;
+			if (typeof value === "string" && /^https?:\/\//i.test(value)){
+				var a = document.createElement("a");
+				a.href = value; a.target = "_blank"; a.rel = "noopener"; a.textContent = value;
+				el.appendChild(a);
+			} else {
+				el.textContent = (value === undefined || value === null || value === "") ? "n/a" : value;
+			}
+		}
+
+		function setBadge(key, text, ok){
+			var b = $("badge_" + key);
+			b.textContent = text;
+			b.className = "badge" + (ok ? " ok" : "");
+		}
+
+		function reWriteTable(state, data){
+			SOURCES.forEach(function(s){
+				var requested = fieldValue(s.field).length > 0;
+				s.vars.forEach(function(v){
+					if (!requested){
+						setCell(v[0], "n/a", "empty");
+					} else if (state === "loading"){
+						setCell(v[0], null, "loading");
+					} else if (state === "error"){
+						setCell(v[0], "n/a", "empty");
+					} else {
+						setCell(v[0], window[v[0]]);
+					}
+				});
+				if (!requested) setBadge(s.key, "Not requested");
+				else if (state === "loading") setBadge(s.key, "Loading…");
+				else if (state === "error") setBadge(s.key, "Failed");
+				else setBadge(s.key, (data && data[s.key]) ? "Retrieved" : "No data", !!(data && data[s.key]));
+			});
+		}
+
+		function setBusy(busy, msg){
+			$("btnSend").disabled = busy;
+			$("status").textContent = msg || "";
+		}
+
+		function showError(msg){
+			var a = $("alert");
+			a.textContent = msg;
+			a.className = msg ? "alert show" : "alert";
+		}
+
+		function loadDoc(){
+			var params = [];
+			SOURCES.forEach(function(s){
+				var v = fieldValue(s.field);
+				if (v.length > 0) params.push(s.key.toLowerCase() + "=" + encodeURIComponent(v));
+			});
+
+			if (params.length === 0){
+				showError("Please enter at least one profile ID.");
+				return;
+			}
+
+			showError("");
+			setBusy(true, "Fetching data, this may take a moment…");
+			reWriteTable("loading");
+			$("jsonoutput").textContent = "Loading…";
+
+			var strURL = "/query/?output=json&" + params.join("&");
 			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					strJSON = this.responseText;
-					document.getElementById("jsonoutput").innerHTML = strJSON;
-					var objJSON = JSON.parse(strJSON);
+			xhttp.onreadystatechange = function(){
+				if (this.readyState !== 4) return;
 
-					if (document.getElementById("fldGoogle").value.length > 0){
-					Google_ID = objJSON.Google.ID;
-					Google_URL = objJSON.Google.URL;
-					Google_Citations = objJSON.Google.Citations;
-					Google_hIndex = objJSON.Google.hIndex;
-					Google_i10Index = objJSON.Google.i10Index;
+				if (this.status === 200){
+					var objJSON;
+					try {
+						objJSON = JSON.parse(this.responseText);
+					} catch (e){
+						$("jsonoutput").textContent = this.responseText || "Empty response.";
+						reWriteTable("error");
+						showError("The server response is not valid JSON.");
+						setBusy(false);
+						return;
 					}
-					if (document.getElementById("fldScopus").value.length > 0){
-					Scopus_ID = objJSON.Scopus.ID;
-					Scopus_URL = objJSON.Scopus.URL;
-					Scopus_Documents = objJSON.Scopus.Documents;
-					Scopus_hIndex = objJSON.Scopus.hIndex;
-					Scopus_Citations = objJSON.Scopus.Citations;
-					Scopus_CitationDocuments = objJSON.Scopus.CitationDocuments;
-					}
-					if (document.getElementById("fldPublons").value.length > 0){
-					Publons_ID = objJSON.Publons.ID;
-					Publons_URL = objJSON.Publons.URL;
-					publons_averagePerItem = objJSON.Publons.averagePerItem;
-					publons_averagePerYear = objJSON.Publons.averagePerYear;
-					publons_hIndex = objJSON.Publons.hIndex;
-					publons_timesCited = objJSON.Publons.timesCited;
-					publons_numPublicationsInWosCc = objJSON.Publons.numPublicationsInWosCc;
-					}
-					
-					reWriteTable(false);
-					document.getElementById("btnSend").disabled = false;
 
-				}else if (this.status != 0 && this.status != 200){
-					document.getElementById("jsonoutput").innerHTML = 'error ' + this.status + ' occured!';
-					reWriteTable(true,"error " + this.status + " occurred!");
-					document.getElementById("btnSend").disabled = false;
+					$("jsonoutput").textContent = JSON.stringify(objJSON, null, 2);
+
+					// Expose values as globals, as the JavaScript output does
+					SOURCES.forEach(function(s){
+						if (fieldValue(s.field).length > 0 && objJSON[s.key]){
+							s.vars.forEach(function(v){ window[v[0]] = objJSON[s.key][v[1]]; });
+						}
+					});
+
+					reWriteTable("done", objJSON);
+					setBusy(false, "Done.");
+				} else {
+					var msg = this.status ? "Error " + this.status + " occurred." : "Network error: the request could not be completed.";
+					$("jsonoutput").textContent = msg;
+					reWriteTable("error");
+					showError(msg);
+					setBusy(false);
 				}
 			};
-			document.getElementById("btnSend").disabled = true;
-			reWriteTable(true,"please wait, it's loading...");
-			document.getElementById("jsonoutput").innerHTML = "please wait, it's loading...";
-			
-			strURL = "/query/?output=json";
-			if (document.getElementById("fldGoogle").value.length > 0)
-				strURL = strURL + "&google=" + document.getElementById("fldGoogle").value;
-			if (document.getElementById("fldScopus").value.length > 0)
-				strURL = strURL + "&scopus=" + document.getElementById("fldScopus").value;
-			if (document.getElementById("fldPublons").value.length > 0)
-				strURL = strURL + "&publons=" + document.getElementById("fldPublons").value;
-						
 			xhttp.open("GET", strURL, true);
 			xhttp.send();
 		}
-		
-		function reWriteTable(blnError,strErr = ""){
-			if (document.getElementById("fldGoogle").value.length > 0){
-			document.getElementById("Google_ID").innerHTML = blnError?strErr:Google_ID;
-			document.getElementById("Google_URL").innerHTML = blnError?strErr:Google_URL;
-			document.getElementById("Google_Citations").innerHTML = blnError?strErr:Google_Citations;
-			document.getElementById("Google_hIndex").innerHTML = blnError?strErr:Google_hIndex;
-			document.getElementById("Google_i10Index").innerHTML = blnError?strErr:Google_i10Index;
-			}
-			if (document.getElementById("fldScopus").value.length > 0){
-			document.getElementById("Scopus_ID").innerHTML = blnError?strErr:Scopus_ID;
-			document.getElementById("Scopus_URL").innerHTML = blnError?strErr:Scopus_URL;
-			document.getElementById("Scopus_Documents").innerHTML = blnError?strErr:Scopus_Documents;
-			document.getElementById("Scopus_hIndex").innerHTML = blnError?strErr:Scopus_hIndex;
-			document.getElementById("Scopus_Citations").innerHTML = blnError?strErr:Scopus_Citations;
-			document.getElementById("Scopus_CitationDocuments").innerHTML = blnError?strErr:Scopus_CitationDocuments;
-			}
-			if (document.getElementById("fldPublons").value.length > 0){
-			document.getElementById("Publons_ID").innerHTML = blnError?strErr:Publons_ID;
-			document.getElementById("Publons_URL").innerHTML = blnError?strErr:Publons_URL;
-			document.getElementById("publons_averagePerItem").innerHTML = blnError?strErr:publons_averagePerItem;
-			document.getElementById("publons_averagePerYear").innerHTML = blnError?strErr:publons_averagePerYear;
-			document.getElementById("publons_hIndex").innerHTML = blnError?strErr:publons_hIndex;
-			document.getElementById("publons_timesCited").innerHTML = blnError?strErr:publons_timesCited;
-			document.getElementById("publons_numPublicationsInWosCc").innerHTML = blnError?strErr:publons_numPublicationsInWosCc;
-			}
-		}
-		//window.onload = function(){loadDoc();};
-</script>
 
-		<style>
-body {
-	background-color: #efefef;
-}
-body, div, li {
-	font-family: Arial;
-	font-size: 0.8rem;
-}
+		$("demoForm").addEventListener("submit", function(e){
+			e.preventDefault();
+			loadDoc();
+		});
 
-ul.menu {
-	list-style: none;
-	padding-left: 0;
-}
-.menu > li {
-	padding: 5px 5px 5px;
-}
-.codeDIV {
-	font-size:1rem;
-	width:90%;
-	background: #efefef;
-}
-@media (min-width:500px){
-	#wrapper {
-		display: table;
-		width:100%;
-		table-layout: fixed;
-		/* margin-left: 200px; */
-	}
+		// Copy buttons
+		Array.prototype.forEach.call(document.querySelectorAll(".copy"), function(btn){
+			btn.addEventListener("click", function(){
+				var text = $(btn.getAttribute("data-copy")).textContent;
+				var done = function(){
+					btn.textContent = "Copied";
+					setTimeout(function(){ btn.textContent = "Copy"; }, 1500);
+				};
+				if (navigator.clipboard && navigator.clipboard.writeText){
+					navigator.clipboard.writeText(text).then(done, function(){});
+				} else {
+					var ta = document.createElement("textarea");
+					ta.value = text; document.body.appendChild(ta); ta.select();
+					try { document.execCommand("copy"); done(); } catch (e){}
+					document.body.removeChild(ta);
+				}
+			});
+		});
 
-	#content {
-		display: table-cell;
-		margin:0px 0px 0px;
-		padding-top: 20px;
-		padding-left: 20px;
-		width:100%;
-		background-color: #ffffff;
-	}
-	#sidebar {
-		display: table-cell;
-		width: 13%;
-		min-width: 200px;
-		/* margin-left: -200px; */
-	}
-}
-#cleared {
-	clear: both;
-}
+		//window.onload = function(){ loadDoc(); };
+	</script>
 
-
-table { border-collapse: collapse; text-align: left; width: 95%; font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
-table td,  table th { padding: 3px 10px; } table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; color:#FFFFFF; font-size: 15px; font-weight: bold; border-left: 1px solid #0070A8; }  table thead th:first-child { border: none; } table tbody td { color: #00557F; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; } table tbody .alt td { background: #E1EEf4; color: #00557F; } table tbody td:first-child { border-left: none; } table tbody tr:last-child td { border-bottom: none; } table tfoot td div { border-top: 1px solid #006699;background: #E1EEf4;}  table tfoot td { padding: 0; font-size: 12px }  table tfoot td div{ padding: 2px; } table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; } table tfoot  li { display: inline; } table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #FFFFFF;border: 1px solid #006699;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; } table tfoot ul.active,  table tfoot ul a:hover { text-decoration: none;border-color: #00557F; color: #FFFFFF; background: none; background-color:#006699;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
-		</style>
-
-	</head>
-	<body>
-
-
-
-		<div id="wrapper">
-			<div id="content">
-
-				<h2>Edu-Stats: Academic Statistics Parser</h2>
-
-				<hr />
-				<h3 id="SourceCode">Github Repo</h3>
-You can find the documentation and source code in Github repository at <a href="https://github.com/kavehbc/edu-stats" target="_blank">https://github.com/kavehbc/edu-stats</a>.<br />
-<br />
-
-				<hr />
-				<h3 id="Demo">Demo</h3>
-
-				Please fill the following fields to test the demo version. At least one of the following fields must be completed. 
-<br /><br />
-
-	<table border="1">
-	<tr><td>
-Google Scholar ID:
-	</td><td>
-<input type="text" name="fldGoogle" id="fldGoogle" value="7ftCdTQAAAAJ" />
-	</td></tr>
-	<tr><td>	
-Scopus ID:
-	</td><td>
-<input type="text" name="fldScopus" id="fldScopus" value="54413825200" />
-	</td></tr>
-	<tr><td>	
-Publons ID:
-	</td><td>
-<input type="text" name="fldPublons" id="fldPublons" value="1666350" />
-	</td></tr>
-	<tr><td>
-	&nbsp;
-	</td><td>
-<input type="button" name="btnSend" id="btnSend" value=" Retrieve Data " onclick="loadDoc();" />
-	</td></tr>
-	</table>
-	
-<br /><br />
-In JavaScript output, once the script has been included, each item is stored in a seperate variable as below, and they are accessible via JavaScript.<br />
-				<br />
-				<table border="1">
-					<tr>
-						<th>Variable</th>
-						<th>Value</th>
-					</tr>
-					<tr>
-						<td>Google_ID</td>
-						<td id="Google_ID">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Google_URL</td>
-						<td id="Google_URL">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Google_Citations</td>
-						<td id="Google_Citations">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Google_hIndex</td>
-						<td id="Google_hIndex">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Google_i10Index</td>
-						<td id="Google_i10Index">
-							n/a
-						</td>
-					</tr>
-
-					<tr>
-						<td>Scopus_ID</td>
-						<td id="Scopus_ID">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Scopus_URL</td>
-						<td id="Scopus_URL">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Scopus_Documents</td>
-						<td id="Scopus_Documents">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Scopus_hIndex</td>
-						<td id="Scopus_hIndex">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Scopus_Citations</td>
-						<td id="Scopus_Citations">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Scopus_CitationDocuments</td>
-						<td id="Scopus_CitationDocuments">
-							n/a
-						</td>
-					</tr>
-
-
-					<tr>
-						<td>Publons_ID</td>
-						<td id="Publons_ID">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>Publons_URL</td>
-						<td id="Publons_URL">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>publons_averagePerItem</td>
-						<td id="publons_averagePerItem">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>publons_averagePerYear</td>
-						<td id="publons_averagePerYear">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>publons_hIndex</td>
-						<td id="publons_hIndex">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>publons_timesCited</td>
-						<td id="publons_timesCited">
-							n/a
-						</td>
-					</tr>
-					<tr>
-						<td>publons_numPublicationsInWosCc</td>
-						<td id="publons_numPublicationsInWosCc">
-							n/a
-						</td>
-					</tr>
-
-				</table>
-				<br /><br />
-<b>JSON output:</b><br />
-<i>"output"</i> parameter generates JSON output which is suitable for parsing and AJAX functions. A sample JSON output is shown below:
-				<br />
-				<br />
-				<div class="codeDIV"><pre><code id="jsonoutput" class="json">
-n/a
-				</code></pre></div>
-				
-
-				<br />
-
-For instance, in order to print the Google Scholar h-Index on a page, it is only required to write its variable on a page.<br />
-				<br />
-				<div class="codeDIV"><pre><code class="javascript">
-document.write(Google_hIndex);
-				</code></pre></div>
-				<br />
-				
-				<hr />
-Copyright &copy; 2022. <a href="https://bakhtiyari.com">Kaveh Bakhtiyari</a>. All rights reserved.
-				<br />
-				<br />
-
-			</div>
-			<div id="cleared"/>
-		</div>
-
-	</body>
+</body>
 </html>
