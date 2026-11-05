@@ -7,7 +7,7 @@ This API can be consumed as an embedded JavaScript, or retrieve the details in J
 This is developed in multiple languages as below:
 
 - [*php*](php/README.md):
-  - For more information, open the [*php*](php/README.md) folder. PHP version has a [live demo](https://edu-stats.kaveh.me/demo/).
+  - For more information, open the [*php*](php/README.md) folder. PHP version has a [live demo](https://edu-stats.bakhtiyari.com/demo/).
 - [*python*](python/README.md):
   - This is developed as pip package and can be installed. For more information, check the [*python*](python/README.md) folder.
 

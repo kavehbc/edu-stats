@@ -3,7 +3,7 @@
 This library parse and return the academic metrics such as number of citations, h-Index, etc.
 
 ## Live Demo
-For live demo, you can check https://edu-stats.kaveh.me/demo/
+For live demo, you can check https://edu-stats.bakhtiyari.com/demo/
 
 ## Supported Profiles
 Google Scholar, Scopus, Publons
