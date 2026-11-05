@@ -11,70 +11,59 @@
 
 error_reporting(E_ERROR | E_PARSE);
 //error_reporting(E_ALL);
-// Never expose errors (paths, internals) to visitors; log them instead
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-ini_set("log_errors", 1);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('safe_mode', false);
+//ini_set("log_errors", 1);
 //ini_set("error_log", "php-error.log");
 
-header('X-Content-Type-Options: nosniff');
+ini_set("user_agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36");
+ini_set('allow_url_fopen', 1);
 
-$whitelist_urls = array("edu-stats.bakhtiyari.com", "edu-stats.kaveh.me", "kaveh.bakhtiyari.com", "wvvw.monataghavi.com");
+// CORS: allow cross-origin requests from approved sites
+$cors_allowed_origins = array(
+    "https://bakhtiyari.com",
+    "https://www.bakhtiyari.com",
+	"https://kaveh.bakhtiyari.com",
+	"https://edu-stats.bakhtiyari.com",
+    "https://monataghavi.com",
+    "https://www.monataghavi.com",
+	"https://wvvw.monataghavi.com"
+);
 
-// Note: the Referer header can be forged by non-browser clients, so this only
-// limits casual embedding/hotlinking; it is not an authentication mechanism.
+$request_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+if (in_array($request_origin, $cors_allowed_origins, true)) {
+    header("Access-Control-Allow-Origin: " . $request_origin);
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+}
+header("Vary: Origin");
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
+
 $validated = False;
-if (isset($_SERVER['HTTP_REFERER']) && is_string($_SERVER['HTTP_REFERER'])){
-	$host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-	if (is_string($host) && in_array(strtolower($host), $whitelist_urls, true)){
-		$validated = True;
+if (isset($_SERVER['HTTP_REFERER'])){
+	$server_ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+	$parse = parse_url($server_ref);
+	$host = $parse['host'];
+	
+	foreach ($whitelist_urls as $value){
+		if ($host == $value){
+			$validated = True;
+		}
 	}
 }
 
 if (!$validated)
 {
 	header('HTTP/1.0 403 Forbidden');
-	header('Content-Type: text/plain; charset=utf-8');
 	echo("Your access has been denied.");
 	exit();
 }
 
 $EduStatsVersion = "2.0.1";
-
-// Returns the query string parameter if it matches $pattern, "" if it is absent,
-// and stops with HTTP 400 if it is present but invalid.
-function get_param($name, $pattern){
-	if (!isset($_GET[$name]) || $_GET[$name] === ''){
-		return "";
-	}
-	$value = $_GET[$name];
-	if (!is_string($value) || !preg_match($pattern, $value)){
-		header('HTTP/1.0 400 Bad Request');
-		header('Content-Type: text/plain; charset=utf-8');
-		echo("Invalid '" . $name . "' parameter.");
-		exit();
-	}
-	return $value;
-}
-
-// Scraped values are untrusted; only pass through finite numbers
-function to_number($value, $default = -1){
-	$value = trim((string)$value);
-	if (is_numeric($value) && is_finite($value + 0)){
-		return $value + 0;
-	}
-	return $default;
-}
-
-// Encodes a value as a safe JavaScript literal
-function js_value($value){
-	return json_encode($value, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES);
-}
-
-// Cookie jar is kept outside the web root so it cannot be downloaded
-function cookie_file(){
-	return sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'edustats_cookie.txt';
-}
 
 function get_web_page($url, $post = false, $cookiesIn = '', $param = ''){
 	$options = array(
@@ -84,26 +73,24 @@ function get_web_page($url, $post = false, $cookiesIn = '', $param = ''){
 	CURLOPT_FOLLOWLOCATION => true,     // follow redirects
 	CURLOPT_ENCODING       => "",       // handle all encodings
 	CURLOPT_AUTOREFERER    => true,     // set referer on redirect
-	CURLOPT_CONNECTTIMEOUT => 10,       // timeout on connect
-	CURLOPT_TIMEOUT        => 30,       // timeout on response
-	CURLOPT_MAXREDIRS      => 5,        // stop after 5 redirects
-	CURLOPT_PROTOCOLS      => CURLPROTO_HTTPS, // HTTPS only, including redirects
-	CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
+	CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+	CURLOPT_TIMEOUT        => 120,      // timeout on response
+	CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
 	CURLINFO_HEADER_OUT    => true,
-	CURLOPT_SSL_VERIFYPEER => true,     // verify SSL certificates
-	CURLOPT_SSL_VERIFYHOST => 2,
-	CURLOPT_VERBOSE        => false,
+	CURLOPT_SSL_VERIFYPEER => false,     // Disabled SSL Cert checks
+	CURLOPT_SSL_VERIFYHOST => false,
+	CURLOPT_VERBOSE        => true,
 	CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2_0,
 	CURLOPT_USERAGENT      => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36",
 	CURLOPT_COOKIE         => $cookiesIn,
-	CURLOPT_COOKIEJAR      => cookie_file(),
-	CURLOPT_COOKIEFILE     => cookie_file()
+	CURLOPT_COOKIEJAR      => dirname(__FILE__) . '/cookie.txt',
+	CURLOPT_COOKIEFILE     => dirname(__FILE__) . '/cookie.txt'
 	);
-
+	
 	if (strlen($param) > 0){
 		$options[CURLOPT_POSTFIELDS] = $param; //Set POST parameters
 	}
-
+	
 	$ch      = curl_init($url);
 	curl_setopt_array($ch, $options);
 	$rough_content = curl_exec($ch);
@@ -111,12 +98,9 @@ function get_web_page($url, $post = false, $cookiesIn = '', $param = ''){
 	$errmsg  = curl_error($ch);
 	$header  = curl_getinfo($ch);
 	curl_close($ch);
-
-	if ($rough_content === false){
-		$rough_content = '';
-	}
+	
 	$header_content = substr($rough_content, 0, $header['header_size']);
-	$body_content = trim(substr($rough_content, $header['header_size']));
+	$body_content = trim(str_replace($header_content, '', $rough_content));
 	$pattern = "#set-cookie:\\s+(?<cookie>[^=]+=[^;]+)#m"; 
 	preg_match_all($pattern, $header_content, $matches); 
 	$cookiesOut = implode("; ", $matches['cookie']);
@@ -150,36 +134,43 @@ $publons_averagePerYear = -1;
 $publons_hIndex = -1;
 $publons_timesCited = -1;
 $publons_numPublicationsInWosCc = -1;
-
-// Validate all input before any outbound request is made
-$gscholar_id = get_param('google', '/^[A-Za-z0-9_-]{1,32}\z/');
-$scopus_id = get_param('scopus', '/^[0-9]{1,20}\z/');
-$publons_id = get_param('publons', '/^[A-Za-z0-9-]{1,32}\z/');
-$prefix = get_param('prefix', '/^[A-Za-z_][A-Za-z0-9_]{0,9}\z/'); // must form a valid JS identifier
-
-$output = "javascript";
-if(isset($_GET['output']) && is_string($_GET['output']) && !empty($_GET['output'])){
-	$output = $_GET['output'];
-}
-
-if (strlen($gscholar_id) > 0){
+	
+$gscholar_id = "";
+if(isset($_GET['google']) && !empty($_GET['google'])){
+	$gscholar_id = $_GET['google'];
 	google($gscholar_id);
 }
-if (strlen($scopus_id) > 0){
+
+$scopus_id = "";
+if(isset($_GET['scopus']) && !empty($_GET['scopus'])){
+	$scopus_id = $_GET['scopus'];
 	scopus($scopus_id);
 }
-if (strlen($publons_id) > 0){
+
+$publons_id = "";
+if(isset($_GET['publons']) && !empty($_GET['publons'])){
+	$publons_id = $_GET['publons'];
 	publons($publons_id);
+}
+
+$prefix = "";
+if(isset($_GET['prefix']) && !empty($_GET['prefix'])){
+	$prefix = $_GET['prefix'];
+}
+
+$output = "javascript";
+if(isset($_GET['output']) && !empty($_GET['output'])){
+	$output = $_GET['output'];
 }
 
 switch ($output){
 	case "json":
-		header('Content-Type: application/json; charset=utf-8');
 		JSONAll();
 		break;
 	case "javascript":
+		ScriptAll();
+		break;
 	default:
-		header('Content-Type: application/javascript; charset=utf-8');
 		ScriptAll();
 }
 
@@ -191,7 +182,7 @@ function google($GScholar){
 	global $GhIndex;
 	global $Gi10Index;
 	
-	$GURL = "https://scholar.google.com/citations?user=" . rawurlencode($GScholar) . "&hl=en";
+	$GURL = "https://scholar.google.com/citations?user=" . $GScholar . "&hl=en";
 	
 	$PageContent = get_web_page($GURL, false);
 	$Cookies = $PageContent['cookies'];
@@ -205,14 +196,8 @@ function google($GScholar){
 	
 	for ($i = 1; $i <= 5; $i++){
 		$dblFROM = strpos($Code,$SearchFROM,$startPoint);
-		if ($dblFROM === false){
-			break;
-		}
 		$dblFROM = $dblFROM + strlen($SearchFROM);
 		$dblTO = strpos($Code,$strTO,$dblFROM);
-		if ($dblTO === false){
-			break;
-		}
 		$startPoint = $dblTO;
 		$dblTO = $dblTO - $dblFROM;
 		
@@ -220,11 +205,11 @@ function google($GScholar){
 		if (strlen($strResult) > 0){
 			$strConverted = str_replace(",","",$strResult);
 			if ($i == 1){
-				$GCitations = to_number($strConverted);
+				$GCitations = $strConverted;
 				}else if ($i == 3){
-				$GhIndex = to_number($strConverted);
+				$GhIndex = $strConverted;
 				}else if ($i == 5){
-				$Gi10Index = to_number($strConverted);
+				$Gi10Index = $strConverted;
 			}
 		}
 		
@@ -240,27 +225,21 @@ function scopus($ScopusID){
 	global $Scopus_Citations;
 	global $Scopus_CitationDocuments;
 
-	$ScopusURL = "https://www.scopus.com/authid/detail.uri?authorId=" . rawurlencode($ScopusID);
+	$ScopusURL = "https://www.scopus.com/authid/detail.uri?authorId=" . $ScopusID;
 	$ScopusEntryURL = "https://scopus.com/";
-	$scopus_api_url = "https://www.scopus.com/api/authors/" . rawurlencode($ScopusID) . "/metrics";
+	$scopus_api_url = "https://www.scopus.com/api/authors/" . $ScopusID . "/metrics";
 
 	$page_content = get_web_page($ScopusEntryURL);
 	$cookies = $page_content['cookies'];
-
+		
 	$page_content = get_web_page($scopus_api_url, False, $cookies);
 	$content = $page_content['content'];
-
-	// LIBXML_NONET blocks network access while parsing (no external entities/DTDs)
-	libxml_use_internal_errors(true);
-	$scopus = simplexml_load_string($content, 'SimpleXMLElement', LIBXML_NONET);
-	libxml_clear_errors();
-	if ($scopus === false){
-		return;
-	}
-	$Scopus_hIndex = to_number($scopus->h_index);
-	$Scopus_Documents = to_number($scopus->documents);
-	$Scopus_Citations = to_number($scopus->citations->citation_count);
-	$Scopus_CitationDocuments = to_number($scopus->citations->by_documents_count);
+	
+	$scopus = new SimpleXMLElement($content);
+	$Scopus_hIndex = $scopus->h_index;
+    $Scopus_Documents = $scopus->documents;
+	$Scopus_Citations = $scopus->citations->citation_count;
+	$Scopus_CitationDocuments = $scopus->citations->by_documents_count;
 }
 
 
@@ -273,24 +252,21 @@ function publons($publonsID){
 	global $publons_timesCited;
 	global $publons_numPublicationsInWosCc;
 	
-	$PublonsURL = "https://publons.com/researcher/" . rawurlencode($publonsID) . "/";
-	$publons_url = "https://publons.com/api/stats/individual/" . rawurlencode($publonsID) . "/";
-
+	$PublonsURL = "https://publons.com/researcher/" . $publonsID . "/";
+	$publons_url = "https://publons.com/api/stats/individual/" . $publonsID . "/";
+	
 	//$Code = file_get_contents($ridurl);
-
+	
 	$page_content = get_web_page($publons_url);
 	$str_json = $page_content['content'];
 
 	$json = json_decode($str_json, true);
-	if (!is_array($json)){
-		return;
-	}
-
-	$publons_averagePerItem = to_number(isset($json['averagePerItem']) ? $json['averagePerItem'] : '');
-	$publons_averagePerYear = to_number(isset($json['averagePerYear']) ? $json['averagePerYear'] : '');
-	$publons_hIndex = to_number(isset($json['hIndex']) ? $json['hIndex'] : '');
-	$publons_timesCited = to_number(isset($json['timesCited']) ? $json['timesCited'] : '');
-	$publons_numPublicationsInWosCc = to_number(isset($json['numPublicationsInWosCc']) ? $json['numPublicationsInWosCc'] : '');
+	
+	$publons_averagePerItem = $json['averagePerItem'];
+	$publons_averagePerYear = $json['averagePerYear'];
+	$publons_hIndex = $json['hIndex'];
+	$publons_timesCited = $json['timesCited'];
+	$publons_numPublicationsInWosCc = $json['numPublicationsInWosCc'];
 	
 }
 
@@ -332,23 +308,23 @@ function ScriptAll(){
 	global $prefix;
 	global $EduStatsVersion;
 	
-	echo("EduStats = " . js_value($EduStatsVersion) . ";");
-
+	echo("EduStats = \"" . $EduStatsVersion . "\";");
+	
 	if (strlen($gscholar_id) > 0){
-		echo(PrefixCheck() . "Google_ID = " . js_value($gscholar_id) . ";");
-		echo(PrefixCheck() . "Google_URL = " . js_value($GURL) . ";");
-		echo(PrefixCheck() . "Google_Citations = " . js_value($GCitations) . ";");
-		echo(PrefixCheck() . "Google_hIndex = " . js_value($GhIndex) . ";");
-		echo(PrefixCheck() . "Google_i10Index = " . js_value($Gi10Index) . ";");
+		echo(PrefixCheck() . "Google_ID = \"" . $gscholar_id . "\";");
+		echo(PrefixCheck() . "Google_URL = \"" . $GURL . "\";");
+		echo(PrefixCheck() . "Google_Citations = " . $GCitations . ";");
+		echo(PrefixCheck() . "Google_hIndex = " . $GhIndex . ";");
+		echo(PrefixCheck() . "Google_i10Index = " . $Gi10Index . ";");
 	}
-
+	
 	if (strlen($scopus_id) > 0){
-		echo(PrefixCheck() . "Scopus_ID = " . js_value($scopus_id) . ";");
-		echo(PrefixCheck() . "Scopus_URL = " . js_value($ScopusURL) . ";");
-		echo(PrefixCheck() . "Scopus_hIndex = " . js_value($Scopus_hIndex) . ";");
-		echo(PrefixCheck() . "Scopus_Citations = " . js_value($Scopus_Citations) . ";");
-		echo(PrefixCheck() . "Scopus_Documents = " . js_value($Scopus_Documents) . ";");
-		echo(PrefixCheck() . "Scopus_CitationDocuments = " . js_value($Scopus_CitationDocuments) . ";");
+		echo(PrefixCheck() . "Scopus_ID = \"" . $scopus_id . "\";");
+		echo(PrefixCheck() . "Scopus_URL = \"" . $ScopusURL . "\";");
+		echo(PrefixCheck() . "Scopus_hIndex = " . $Scopus_hIndex . ";");
+		echo(PrefixCheck() . "Scopus_Citations = " . $Scopus_Citations . ";");		
+		echo(PrefixCheck() . "Scopus_Documents = " . $Scopus_Documents . ";");
+		echo(PrefixCheck() . "Scopus_CitationDocuments = " . $Scopus_CitationDocuments . ";");
 	}
 	
 	global $publons_averagePerItem;
@@ -358,13 +334,13 @@ function ScriptAll(){
 	global $publons_numPublicationsInWosCc;
 	
 	if (strlen($publons_id) > 0){
-		echo(PrefixCheck() . "Publons_ID = " . js_value($publons_id) . ";");
-		echo(PrefixCheck() . "Publons_URL = " . js_value($PublonsURL) . ";");
-		echo(PrefixCheck() . "publons_averagePerItem = " . js_value((string)$publons_averagePerItem) . ";");
-		echo(PrefixCheck() . "publons_averagePerYear = " . js_value((string)$publons_averagePerYear) . ";");
-		echo(PrefixCheck() . "publons_hIndex = " . js_value((string)$publons_hIndex) . ";");
-		echo(PrefixCheck() . "publons_timesCited = " . js_value((string)$publons_timesCited) . ";");
-		echo(PrefixCheck() . "publons_numPublicationsInWosCc = " . js_value((string)$publons_numPublicationsInWosCc) . ";");
+		echo(PrefixCheck() . "Publons_ID = \"" . $publons_id . "\";");
+		echo(PrefixCheck() . "Publons_URL = \"" . $PublonsURL . "\";");
+		echo(PrefixCheck() . "publons_averagePerItem = \"" . $publons_averagePerItem . "\";");
+		echo(PrefixCheck() . "publons_averagePerYear = \"" . $publons_averagePerYear . "\";");
+		echo(PrefixCheck() . "publons_hIndex = \"" . $publons_hIndex . "\";");
+		echo(PrefixCheck() . "publons_timesCited = \"" . $publons_timesCited . "\";");
+		echo(PrefixCheck() . "publons_numPublicationsInWosCc = \"" . $publons_numPublicationsInWosCc . "\";");
 	}
 }
 
@@ -394,42 +370,42 @@ function JSONAll(){
 	
 	global $EduStatsVersion;
 	
-	$result = array("EduStats" => $EduStatsVersion);
-
+	$strJSON = "";
+	$strJSON .= "{\"EduStats\":\"" . $EduStatsVersion . "\"\r\n";
+	
 	if (strlen($gscholar_id) > 0){
-		$result["Google"] = array(
-			"ID"        => $gscholar_id,
-			"URL"       => $GURL,
-			"Citations" => $GCitations,
-			"hIndex"    => $GhIndex,
-			"i10Index"  => $Gi10Index
-		);
+		$strJSON .= ",\"Google\":\r\n";
+		$strJSON .= "\t{\"ID\":\"" . $gscholar_id . "\",\r\n";
+		$strJSON .= "\t\"URL\":\"" . $GURL . "\",\r\n";
+		$strJSON .= "\t\"Citations\":" . $GCitations . ",\r\n";
+		$strJSON .= "\t\"hIndex\":" . $GhIndex . ",\r\n";
+		$strJSON .= "\t\"i10Index\":" . $Gi10Index . "}\r\n";
 	}
-
+	
 	if (strlen($scopus_id) > 0){
-		$result["Scopus"] = array(
-			"ID"                => $scopus_id,
-			"URL"               => $ScopusURL,
-			"Documents"         => $Scopus_Documents,
-			"hIndex"            => $Scopus_hIndex,
-			"Citations"         => $Scopus_Citations,
-			"CitationDocuments" => $Scopus_CitationDocuments
-		);
+		$strJSON .= ",";
+		$strJSON .= "\"Scopus\":\r\n";
+		$strJSON .= "\t{\"ID\":\"" . $scopus_id . "\",\r\n";
+		$strJSON .= "\t\"URL\":\"" . $ScopusURL . "\",\r\n";
+		$strJSON .= "\t\"Documents\":" . $Scopus_Documents . ",\r\n";
+		$strJSON .= "\t\"hIndex\":" . $Scopus_hIndex . ",\r\n";
+		$strJSON .= "\t\"Citations\":" . $Scopus_Citations . ",\r\n";
+		$strJSON .= "\t\"CitationDocuments\":" . $Scopus_CitationDocuments . "}\r\n";
 	}
-
+	
 	if (strlen($publons_id) > 0){
-		$result["Publons"] = array(
-			"ID"                     => $publons_id,
-			"URL"                    => $PublonsURL,
-			"averagePerItem"         => $publons_averagePerItem,
-			"averagePerYear"         => $publons_averagePerYear,
-			"hIndex"                 => $publons_hIndex,
-			"timesCited"             => $publons_timesCited,
-			"numPublicationsInWosCc" => $publons_numPublicationsInWosCc
-		);
+		$strJSON .= ",";
+		$strJSON .= "\"Publons\":\r\n";
+		$strJSON .= "\t{\"ID\":\"" . $publons_id . "\",\r\n";
+		$strJSON .= "\t\"URL\":\"" . $PublonsURL . "\",\r\n";
+		$strJSON .= "\t\"averagePerItem\":" . $publons_averagePerItem . ",\r\n";
+		$strJSON .= "\t\"averagePerYear\":" . $publons_averagePerYear . ",\r\n";
+		$strJSON .= "\t\"hIndex\":" . $publons_hIndex . ",\r\n";
+		$strJSON .= "\t\"timesCited\":" . $publons_timesCited . ",\r\n";
+		$strJSON .= "\t\"numPublicationsInWosCc\":" . $publons_numPublicationsInWosCc . "}\r\n";
 	}
-
-	// json_encode escapes all values; JSON_HEX_TAG keeps it safe if inserted into HTML
-	echo (json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG));
+	
+	$strJSON .= "}";		
+	echo ($strJSON);
 }
 ?>
